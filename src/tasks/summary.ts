@@ -1,0 +1,82 @@
+import { BlogPost, SummaryData } from '../types';
+
+/**
+ * 記事一覧からサマリーデータを計算します。
+ * @param articles 記事一覧
+ * @param tagToGroupMap タグからグループへのマッピング
+ * @returns サマリーデータ
+ */
+export function calculateSummary(
+  articles: BlogPost[],
+  tagToGroupMap: Record<string, string>
+): SummaryData {
+  const summary: SummaryData = {
+    totalPosts: articles.length,
+    categoryCounts: {},
+    tagGroupCounts: {},
+    paidPostsCount: 0,
+    totalPaidCharacterCount: 0,
+  };
+
+  for (const article of articles) {
+    // カテゴリー別集計
+    const category = article.category || '未設定';
+    summary.categoryCounts[category] = (summary.categoryCounts[category] || 0) + 1;
+
+    // 有料記事集計
+    if (article.isPaid) {
+      summary.paidPostsCount++;
+      summary.totalPaidCharacterCount += article.characterCount;
+    }
+
+    // タググループ別集計（1記事内で同じグループのタグが複数あっても1とカウント）
+    const groupsInArticle = new Set<string>();
+    if (article.tags && article.tags.length > 0) {
+      for (const tag of article.tags) {
+        const group = tagToGroupMap[tag] || 'その他';
+        groupsInArticle.add(group);
+      }
+    } else {
+      groupsInArticle.add('タグなし');
+    }
+
+    for (const group of groupsInArticle) {
+      summary.tagGroupCounts[group] = (summary.tagGroupCounts[group] || 0) + 1;
+    }
+  }
+
+  return summary;
+}
+
+/**
+ * サマリーデータをマークダウン形式に変換します。
+ * @param summary サマリーデータ
+ * @returns マークダウン文字列
+ */
+export function formatSummaryToMarkdown(summary: SummaryData): string {
+  const now = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+  let md = `# ブログ記事サマリー\n\n`;
+  md += `生成日時: ${now}\n\n`;
+
+  md += `## 📊 全体統計\n\n`;
+  md += `| 項目 | 数値 |\n`;
+  md += `| :--- | :--- |\n`;
+  md += `| 記事総数 | ${summary.totalPosts} 件 |\n`;
+  md += `| 有料記事数 | ${summary.paidPostsCount} 件 |\n`;
+  md += `| 有料記事の総文字数 | ${summary.totalPaidCharacterCount.toLocaleString()} 文字 |\n\n`;
+
+  md += `## 📂 カテゴリー別記事数\n\n`;
+  const categories = Object.keys(summary.categoryCounts).sort();
+  for (const cat of categories) {
+    md += `- **${cat}**: ${summary.categoryCounts[cat]} 件\n`;
+  }
+  md += '\n';
+
+  md += `## 🏷️ タググループ別記事数\n\n`;
+  const groups = Object.keys(summary.tagGroupCounts).sort();
+  for (const group of groups) {
+    md += `- **${group}**: ${summary.tagGroupCounts[group]} 件\n`;
+  }
+
+  return md;
+}

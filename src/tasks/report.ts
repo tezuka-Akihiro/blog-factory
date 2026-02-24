@@ -21,3 +21,21 @@ export async function saveReport(result: InspectionResult): Promise<string> {
 
   return filePath;
 }
+
+/**
+ * 文字列をマークダウンファイルとして保存します。
+ * @param content マークダウンの内容
+ * @param filename ファイル名（デフォルト: summary.md）
+ * @returns 保存されたファイルのパス
+ */
+export async function saveMarkdownReport(content: string, filename: string = 'summary.md'): Promise<string> {
+  const resultsDir = join(process.cwd(), 'results');
+  await mkdir(resultsDir, { recursive: true });
+
+  const filePath = join(resultsDir, filename);
+
+  await writeFile(filePath, content, 'utf-8');
+  Logger.success(`Markdown report saved to ${filePath}`);
+
+  return filePath;
+}
