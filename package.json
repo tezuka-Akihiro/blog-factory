@@ -4,7 +4,8 @@
   "description": "「技術本 2.0」を製造・メンテナンスし続ける、構造的品質の司令塔。",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "inspect": "ts-node src/index.ts inspect"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "commander": "^14.0.3",
     "dotenv": "^17.3.1",
     "gray-matter": "^4.0.3"
   }
