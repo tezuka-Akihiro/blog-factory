@@ -40,12 +40,8 @@ blog-factory/
 ├── src/
 │   ├── commands/task/
 │   │   ├── inspect.ts       # inspectコマンド実装
-<<<<<<< HEAD
 │   │   ├── summary.ts       # summaryコマンド実装
 │   │   └── info.ts          # infoコマンド実装
-=======
-│   │   └── summary.ts       # summaryコマンド実装
->>>>>>> preview
 │   ├── tasks/
 │   │   ├── scan.ts          # .md/.mdxファイルの再帰スキャン
 │   │   ├── extract.ts       # frontmatterからメタデータ抽出
