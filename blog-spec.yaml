@@ -1,0 +1,423 @@
+# spec.yaml - 外部変数仕様書
+# 実装・テスト・仕様書で共通参照するリテラル値定義
+
+# ==========================================
+# メタデータ
+# ==========================================
+metadata:
+  feature_name: "blog-posts"
+  slug: "posts"
+  created_date: "2025-11-14"
+  last_updated: "2025-11-14"
+  version: "1.0.0"
+
+# ==========================================
+# SEO・メタタグ設定
+# ==========================================
+meta:
+  description: "Browse our collection of articles covering web development, programming, and technology."
+
+# ==========================================
+# サーバー処理設定 (Loader/Action)
+# ==========================================
+server_io:
+  loader:
+    # 記事一覧取得のデフォルト設定
+    default_sort: "desc"
+  action:
+    # このセクションではactionは不要（記事一覧は閲覧のみ）
+    intents: {}
+
+# ==========================================
+# カテゴリ定義
+# ==========================================
+categories:
+  - id: 1
+    name: "ClaudeMix ガイド"
+    emoji: "📖"
+    description: "Claude Code公式ドキュメントの翻訳・まとめ"
+    use_case: "機能を調べたいときの参照用"
+  - id: 2
+    name: "ClaudeMix 記録"
+    emoji: "📝"
+    description: "トラブルシュート・最適化の実践ログ"
+    use_case: "同じ問題に遭遇したときの解決策"
+  - id: 3
+    name: "ClaudeMix 考察"
+    emoji: "💭"
+    description: "設計思想・リファクタリングから得た知見"
+    use_case: "設計判断の参考にしたいとき"
+  - id: 4
+    name: "起業"
+    emoji: "💼"
+    description: "起業活動・セミナー・スタートアップハブでの交流"
+    use_case: "起業活動やスタートアップ関連の記事"
+  - id: 5
+    name: "インフォメーション"
+    emoji: "ℹ️"
+    description: "お知らせ・アップデート情報"
+    use_case: "サービスの重要なお知らせやアップデート情報"
+
+# ==========================================
+# タグマスタ定義
+# ==========================================
+# ブログ記事のタグ管理
+# - タグは「技術要素 + 性質」の組み合わせで使用
+#   - technical: Playwright, Vitestなど、具体的な技術名
+#   - nature: troubleshooting, refactoringなど、記事の起因や性質
+# - YAGNI原則: 実際に記事を書いてからタグを追加
+# - ソフトホワイトリスト方式: spec.yamlに登録してから使用（推奨）
+#
+# タググループ化方針:
+# - UIでは、タグを技術グループ（Remix, Cloudflare, Claude Code, その他）ごとに表示
+# - 各タグの`group`プロパティに基づいて動的にグループ表示を構築
+# - グループ順序は tag_groups.order で定義
+# 注: 実際に記事で使用されているタグのみを定義
+tags:
+  # Remix関連
+  - name: "SSR"
+    category: "technical"
+    group: "Remix"
+    description: "Server-Side Rendering"
+  - name: "Vite"
+    category: "technical"
+    group: "Remix"
+    description: "Vite ビルドツール"
+  - name: "React"
+    category: "technical"
+    group: "Remix"
+    description: "Reactライブラリ"
+  - name: "Loader"
+    category: "technical"
+    group: "Remix"
+    description: "Remix Loader"
+  - name: "Nested Routing"
+    category: "technical"
+    group: "Remix"
+    description: "Remixのネストされたルーティング"
+  - name: "Playwright"
+    category: "technical"
+    group: "Remix"
+    description: "Playwrightを使用したE2Eテスト"
+  - name: "Vitest"
+    category: "technical"
+    group: "Remix"
+    description: "Vitestを使用したユニットテスト"
+
+  # Cloudflare関連
+  - name: "Pages"
+    category: "technical"
+    group: "Cloudflare"
+    description: "Cloudflare Pages"
+  - name: "D1"
+    category: "technical"
+    group: "Cloudflare"
+    description: "Cloudflare D1"
+  - name: "R2"
+    category: "technical"
+    group: "Cloudflare"
+    description: "Cloudflare R2"
+  - name: "KV"
+    category: "technical"
+    group: "Cloudflare"
+    description: "Cloudflare KV"
+
+  # Claude Code関連
+  - name: "MCP"
+    category: "technical"
+    group: "Claude Code"
+    description: "Model Context Protocol"
+  - name: "Skills"
+    category: "technical"
+    group: "Claude Code"
+    description: "Claude Code Skills"
+  - name: "CLAUDE.md"
+    category: "technical"
+    group: "Claude Code"
+    description: "Claude Code CLAUDE.md"
+  - name: "Subagent"
+    category: "technical"
+    group: "Claude Code"
+    description: "Claude Code Subagents"
+  - name: "rules"
+    category: "technical"
+    group: "Claude Code"
+    description: "Claude Code Subagents"
+
+  # その他技術
+  - name: "TypeScript"
+    category: "technical"
+    group: "other"
+    description: "TypeScript 型システム・言語機能"
+  - name: "OGP"
+    category: "technical"
+    group: "other"
+    description: "Open Graph Protocol 画像生成"
+  - name: "Stripe"
+    category: "technical"
+    group: "other"
+    description: "Stripe決済・サブスクリプション"
+  - name: "Jules"
+    category: "technical"
+    group: "other"
+    description: "sub AI エージェント"
+
+  # 記事の性質
+  - name: "troubleshooting"
+    category: "nature"
+    group: "other"
+    description: "トラブルシュート起因の記事"
+  - name: "refactoring"
+    category: "nature"
+    group: "other"
+    description: "リファクタリング起因の記事"
+  - name: "testing"
+    category: "nature"
+    group: "other"
+    description: "テスト設計・実装関連"
+  - name: "architecture"
+    category: "nature"
+    group: "other"
+    description: "アーキテクチャ設計関連"
+  - name: "performance"
+    category: "nature"
+    group: "other"
+    description: "パフォーマンス最適化"
+
+  # 起業関連
+  - name: "セミナー"
+    category: "nature"
+    group: "起業"
+    description: "セミナー・勉強会の参加レポート"
+  - name: "スタハブ多摩"
+    category: "nature"
+    group: "起業"
+    description: "スタートアップハブ多摩での活動"
+  - name: "エンジニア初心者向き"
+    category: "nature"
+    group: "起業"
+    description: "エンジニア初心者向けQ&A"
+  - name: "spiritual"
+    category: "nature"
+    group: "起業"
+    description: "六星占術の月運念運、占いなど"
+
+# ==========================================
+# タググループ順序定義
+# ==========================================
+tag_groups:
+  # UIでのタググループ表示順序
+  order:
+    - "Remix"
+    - "Cloudflare"
+    - "Claude Code"
+    - "other"
+    - "起業"
+
+
+  # 命名規則（ガイドライン）
+  naming_rules:
+    - "小文字を推奨（例外: 固有名詞・略語は大文字可）"
+    - "ハイフン区切り（例: spec-driven, best-practices）"
+    - "略語は大文字可（例: UX, SSR, MCP）"
+    - "動名詞形を推奨（例: test → testing）"
+    - "単数形を推奨（例: tests → testing）"
+
+  # 新規タグ追加時のチェックリスト
+  checklist:
+    - "類似タグがないか確認（表記ゆれを防ぐ）"
+    - "命名規則に従っているか確認"
+    - "YAGNI原則: 本当に必要か？既存タグの組み合わせで代替できないか？"
+    - "spec.yamlに追加してから使用"
+
+# ==========================================
+# 記事一覧表示設定
+# ==========================================
+posts_config:
+  page_title: "Latest Update"
+  # 記事データのソース
+  posts_directory: "content/posts"
+  # フロントマター（YAML）で読み取るフィールド
+  frontmatter_fields:
+    - "title"
+    - "description"
+    - "publishedAt"
+    - "slug"
+    - "category"
+    - "tags"
+
+# ==========================================
+# サムネイル画像表示設定
+# ==========================================
+thumbnail:
+  # 表示設定
+  display:
+    # サムネイル表示を有効化
+    enabled: true
+    # サムネイルが存在しない場合の動作
+    fallback: "default"
+    # サムネイルを強制的に非表示にするカテゴリ
+    suppressed_categories: []
+    # カテゴリごとのデフォルトサムネイル設定
+    default_mapping:
+      "ClaudeMix ガイド":
+        lg: "/core-matrix-emblem.lg.avif"
+        sm: "/core-matrix-emblem.sm.avif"
+      "ClaudeMix 記録":
+        lg: "/core-matrix-emblem.lg.avif"
+        sm: "/core-matrix-emblem.sm.avif"
+      "ClaudeMix 考察":
+        lg: "/core-matrix-emblem.lg.avif"
+        sm: "/core-matrix-emblem.sm.avif"
+      "起業":
+        lg: "/category-entrepreneurship.lg.avif"
+        sm: "/category-entrepreneurship.sm.avif"
+      "インフォメーション":
+        lg: "/category-information.lg.avif"
+        sm: "/category-information.sm.avif"
+
+  # CLS対策（レイアウトシフト防止）
+  performance:
+    # CSS aspect-ratio
+    aspect_ratio: "1200 / 630"
+    # 遅延読み込み
+    loading: "lazy"
+    # 非同期デコード
+    decoding: "async"
+
+  # レスポンシブ画像sizes属性（ブラウザの画像選択に使用）
+  image_sizes:
+    mobile_breakpoint: 767
+    mobile_padding: 32
+    default_width: 380
+
+  # スタイル設定
+  styles:
+    # 画像コンテナのCSSクラス
+    container_class: "thumbnail-container"
+    # 画像のobject-fit
+    object_fit: "cover"
+    # 角丸
+    border_radius: "8px"
+
+# ==========================================
+# UI要素セレクタ
+# ==========================================
+ui_selectors:
+  section:
+    posts_section: "[data-testid='posts-section']"
+    page_title: "[data-testid='page-title']"
+    post_card_grid: "[data-testid='post-card-grid']"
+
+  card:
+    post_card: "[data-testid='post-card']"
+    post_title: "[data-testid='post-title']"
+    post_date: "[data-testid='post-date']"
+    post_link: "[data-testid='post-link']"
+    category_emoji: "[data-testid='category-emoji']"
+    tag_badge: "[data-testid='tag-badge']"
+    thumbnail_container: "[data-testid='thumbnail-container']"
+    thumbnail_image: "[data-testid='thumbnail-image']"
+
+  filter:
+    filter_toggle_button: "[data-testid='filter-toggle-button']"
+    filter_panel: "[data-testid='filter-panel']"
+    category_selector: "[data-testid='category-selector']"
+    tag_grid: "[data-testid='tag-grid']"
+    tag_group_header: "[data-testid='tag-group-header']"
+    tag_button: "[data-testid='tag-button']"
+    filter_submit_button: "[data-testid='filter-submit-button']"
+
+  load_more:
+    load_more_button: "[data-testid='load-more-button']"
+    loading_spinner: "[data-testid='loading-spinner']"
+
+  states:
+    loading: "[data-testid='loading-spinner']"
+    error: "[data-testid='error-message']"
+responsive:
+  grid_columns:
+    mobile: 1
+    tablet: 2
+    desktop: 3
+
+  tag_grid_columns:
+    default: 3
+
+  card_spacing:
+    mobile: "16px"
+    tablet: "20px"
+    desktop: "24px"
+
+# ==========================================
+# メッセージ定数
+# ==========================================
+messages:
+  loading:
+    posts: "記事を読み込んでいます..."
+
+  error:
+    fetch_failed: "記事の取得に失敗しました"
+    no_posts: "記事が見つかりませんでした"
+    network: "通信エラーが発生しました"
+    server: "サーバーエラーが発生しました"
+
+  empty_state:
+    title: "記事がありません"
+    description: "現在公開されている記事はありません"
+
+  lock_message: "ログインで読む"
+
+  filter:
+    submit_label: "フィルタ適用"
+    all_categories_label: "All Categories"
+
+  load_more:
+    button_label: "More"
+    loading_label: "Loading..."
+    no_more_posts: "すべての記事を読み込みました"
+
+# ==========================================
+# 日付フォーマット設定
+# ==========================================
+date_format:
+  iso_format: "YYYY-MM-DD"
+  display_format: "YYYY年M月D日"
+  display_separator: "."
+  locale: "ja-JP"
+
+# ==========================================
+# ビジネスルール定義
+# ==========================================
+# アプリケーション全体で使用される定数値
+business_rules:
+  load_more:
+    posts_per_load: 6
+    initial_load: 6
+
+  display:
+    max_tags_per_card: 5
+    default_category_emoji: "📄"
+
+# ==========================================
+# アクセシビリティ (ARIA)
+# ==========================================
+accessibility:
+  aria_labels:
+    posts_section: "Latest Update"
+    post_card: "記事カード"
+    post_link: "記事詳細へ移動"
+    load_more_button: "さらに記事を読み込む"
+
+  semantic_elements:
+    section_role: "region"
+    card_role: "article"
+
+# ==========================================
+# アクセス制御設定
+# ==========================================
+access_control:
+  # 公開カテゴリ（未ログインでもアクセス可能）
+  public_categories:
+    - "起業"
+    - "インフォメーション"

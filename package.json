@@ -1,0 +1,30 @@
+{
+  "name": "blog-factory",
+  "version": "1.0.0",
+  "description": "「技術本 2.0」を製造・メンテナンスし続ける、構造的品質の司令塔。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tezuka-Akihiro/blog-factory.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/tezuka-Akihiro/blog-factory/issues"
+  },
+  "homepage": "https://github.com/tezuka-Akihiro/blog-factory#readme",
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "gray-matter": "^4.0.3"
+  }
+}
