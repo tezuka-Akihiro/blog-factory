@@ -2,3 +2,5 @@
 node_modules
 results/*
 !results/.gitkeep
+results/*.json
+results/summary.md

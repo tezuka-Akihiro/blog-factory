@@ -18,9 +18,6 @@ npm run inspect -- --category="ClaudeMix ガイド"
 
 # サマリーレポートの生成（results/summary.md に出力）
 npm run summary
-
-# インフォメーション記事の抽出（results/info-list.md に出力）
-npm run info
 ```
 
 TypeScriptのビルドは `ts-node` で直接実行するため、`npm run build` は不要です。
@@ -29,8 +26,8 @@ TypeScriptのビルドは `ts-node` で直接実行するため、`npm run build
 
 ```text
 src/
-├── commands/task/   # CLIコマンドのエントリーポイント（inspect.ts, summary.ts, info.ts）
-├── tasks/           # ビジネスロジック（scan, extract, report, summary, info）
+├── commands/task/   # CLIコマンドのエントリーポイント（inspect.ts, summary.ts）
+├── tasks/           # ビジネスロジック（scan, extract, report, summary）
 ├── types/index.ts   # 共有型定義（BlogPost, SummaryData, InspectionResult）
 ├── utils/           # ユーティリティ（logger, spec-loader）
 └── index.ts         # Commander による CLI ルーティング
@@ -85,7 +82,7 @@ interface BlogPost {
 
 ### 新しいフロントマターフィールドを追加する場合
 
-`src/tasks/extract.ts` の `extractPost()` 関数と `src/types/index.ts` の `BlogPost` 型を同時に更新してください。
+`src/tasks/extract.ts` の `extractMetadata()` 関数と `src/types/index.ts` の `BlogPost` 型を同時に更新してください。
 
 ## コーディング規約
 

@@ -43,8 +43,7 @@ blog-factory/
 │   │   ├── scan.ts          # .md/.mdxファイルの再帰スキャン
 │   │   ├── extract.ts       # frontmatterからメタデータ抽出
 │   │   ├── report.ts        # JSON/Markdownレポート保存
-│   │   ├── summary.ts       # 統計計算・Markdown整形
-│   │   └── info.ts          # インフォメーション記事整形
+│   │   └── summary.ts       # 統計計算・Markdown整形
 │   ├── types/index.ts       # TypeScript型定義
 │   ├── utils/
 │   │   ├── logger.ts        # CLIロガー
