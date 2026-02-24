@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import * as dotenv from 'dotenv';
 import { inspectCommand } from './commands/task/inspect';
 import { summaryCommand } from './commands/task/summary';
+import { infoCommand } from './commands/task/info';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ program
 
 program.addCommand(inspectCommand);
 program.addCommand(summaryCommand);
+program.addCommand(infoCommand);
 
 program.parse(process.argv);
 
