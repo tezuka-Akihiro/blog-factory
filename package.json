@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "inspect": "ts-node src/index.ts inspect",
-    "summary": "ts-node src/index.ts summary"
+    "summary": "ts-node src/index.ts summary",
+    "info": "ts-node src/index.ts info"
   },
   "repository": {
     "type": "git",
