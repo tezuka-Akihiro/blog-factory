@@ -12,16 +12,10 @@ export const inspectCommand = new Command('inspect')
   .option('-c, --category <name>', 'Filter by category')
   .action(async (options) => {
     try {
-      const sourcePath = process.env.BLOG_SOURCE_PATH;
-      if (!sourcePath) {
-        Logger.error('BLOG_SOURCE_PATH is not set in environment variables');
-        process.exit(1);
-      }
-
+      const sourcePath = process.env.BLOG_SOURCE_PATH!;
       const absoluteSourcePath = path.resolve(sourcePath);
       Logger.info(`Starting inspection in: ${absoluteSourcePath}`);
 
-      // blog-spec.yaml から公開カテゴリを取得
       const spec = await loadBlogSpec();
       const publicCategories = spec.access_control?.public_categories || [];
 

@@ -3,11 +3,6 @@ import { join } from 'path';
 import { InspectionResult } from '../types';
 import { Logger } from '../utils/logger';
 
-/**
- * InspectionResult を JSON ファイルとして保存します。
- * @param result インスペクション結果
- * @returns 保存されたファイルのパス
- */
 export async function saveReport(result: InspectionResult): Promise<string> {
   const resultsDir = join(process.cwd(), 'results');
   await mkdir(resultsDir, { recursive: true });
@@ -22,12 +17,6 @@ export async function saveReport(result: InspectionResult): Promise<string> {
   return filePath;
 }
 
-/**
- * 文字列をマークダウンファイルとして保存します。
- * @param content マークダウンの内容
- * @param filename ファイル名（デフォルト: summary.md）
- * @returns 保存されたファイルのパス
- */
 export async function saveMarkdownReport(content: string, filename: string = 'summary.md'): Promise<string> {
   const resultsDir = join(process.cwd(), 'results');
   await mkdir(resultsDir, { recursive: true });

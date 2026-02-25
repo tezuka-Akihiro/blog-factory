@@ -1,10 +1,5 @@
 import { BlogPost } from '../types';
 
-/**
- * インフォメーション記事の一覧をマークダウン形式に変換します。
- * @param articles 記事一覧
- * @returns マークダウン文字列
- */
 export function formatInfoList(articles: BlogPost[]): string {
   const now = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
   let md = `# インフォメーション記事一覧\n\n`;

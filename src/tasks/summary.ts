@@ -1,11 +1,5 @@
 import { BlogPost, SummaryData } from '../types';
 
-/**
- * 記事一覧からサマリーデータを計算します。
- * @param articles 記事一覧
- * @param tagToGroupMap タグからグループへのマッピング
- * @returns サマリーデータ
- */
 export function calculateSummary(
   articles: BlogPost[],
   tagToGroupMap: Record<string, string>
@@ -19,17 +13,14 @@ export function calculateSummary(
   };
 
   for (const article of articles) {
-    // カテゴリー別集計
     const category = article.category || '未設定';
     summary.categoryCounts[category] = (summary.categoryCounts[category] || 0) + 1;
 
-    // 有料記事集計
     if (article.isPaid) {
       summary.paidPostsCount++;
       summary.totalPaidCharacterCount += article.characterCount;
     }
 
-    // タググループ別集計（1記事内で同じグループのタグが複数あっても1とカウント）
     const groupsInArticle = new Set<string>();
     if (article.tags && article.tags.length > 0) {
       for (const tag of article.tags) {
@@ -48,11 +39,6 @@ export function calculateSummary(
   return summary;
 }
 
-/**
- * サマリーデータをマークダウン形式に変換します。
- * @param summary サマリーデータ
- * @returns マークダウン文字列
- */
 export function formatSummaryToMarkdown(summary: SummaryData): string {
   const now = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
   let md = `# ブログ記事サマリー\n\n`;
