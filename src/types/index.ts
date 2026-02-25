@@ -2,7 +2,7 @@ export interface BlogPost {
   title: string;
   description: string;
   category: string;
-  path: string; // ファイル特定用
+  path: string;
   lastModified?: string;
   isPaid: boolean;
   characterCount: number;
@@ -22,4 +22,14 @@ export interface InspectionResult {
   category: string;
   totalCount: number;
   articles: BlogPost[];
+}
+
+export interface BlogSpec {
+  access_control?: {
+    public_categories?: string[];
+  };
+  tags?: Array<{
+    name: string;
+    group: string;
+  }>;
 }

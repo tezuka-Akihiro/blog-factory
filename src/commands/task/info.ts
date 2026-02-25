@@ -11,16 +11,10 @@ export const infoCommand = new Command('info')
   .description('Extract titles and summaries for Information category articles')
   .action(async () => {
     try {
-      const sourcePath = process.env.BLOG_SOURCE_PATH;
-      if (!sourcePath) {
-        Logger.error('BLOG_SOURCE_PATH is not set in environment variables');
-        process.exit(1);
-      }
-
+      const sourcePath = process.env.BLOG_SOURCE_PATH!;
       const absoluteSourcePath = path.resolve(sourcePath);
       Logger.info(`Starting information extraction in: ${absoluteSourcePath}`);
 
-      // blog-spec.yaml から公開カテゴリを取得
       const spec = await loadBlogSpec();
       const publicCategories = spec.access_control?.public_categories || [];
 
@@ -36,7 +30,6 @@ export const infoCommand = new Command('info')
 
       Logger.info(`Filtered ${filteredArticles.length} articles for category: ${targetCategory}`);
 
-      // コンソールに出力
       for (const article of filteredArticles) {
         Logger.info(`Title: ${article.title}`);
         Logger.info(`Summary: ${article.description}`);

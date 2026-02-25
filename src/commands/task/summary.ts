@@ -11,16 +11,10 @@ export const summaryCommand = new Command('summary')
   .description('Generate a summary report of blog articles')
   .action(async () => {
     try {
-      const sourcePath = process.env.BLOG_SOURCE_PATH;
-      if (!sourcePath) {
-        Logger.error('BLOG_SOURCE_PATH is not set in environment variables');
-        process.exit(1);
-      }
-
+      const sourcePath = process.env.BLOG_SOURCE_PATH!;
       const absoluteSourcePath = path.resolve(sourcePath);
       Logger.info(`Starting summary generation in: ${absoluteSourcePath}`);
 
-      // blog-spec.yaml から情報を取得
       const spec = await loadBlogSpec();
       const publicCategories = spec.access_control?.public_categories || [];
       const tagToGroupMap = getTagToGroupMap(spec);

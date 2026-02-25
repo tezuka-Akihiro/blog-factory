@@ -4,13 +4,6 @@ import { BlogPost } from '../types';
 import { Logger } from '../utils/logger';
 import { relative } from 'path';
 
-/**
- * 単一ファイルから BlogPost 型のデータを抽出します。
- * @param filePath ファイルパス
- * @param basePath ルートパス（相対パス計算用）
- * @param publicCategories 公開カテゴリのリスト
- * @returns BlogPost オブジェクト
- */
 export async function extractPost(
   filePath: string,
   basePath: string,
@@ -28,9 +21,6 @@ export async function extractPost(
 
   const characterCount = body.replace(/\s/g, '').length;
 
-  // 有料記事判定:
-  // 1. カテゴリが公開カテゴリに含まれていない
-  // 2. または、フロントマターに freeContentHeading が存在する（一部有料）
   const isPublicCategory = publicCategories.includes(category);
   const hasFreeContentHeading = !!data.freeContentHeading;
   const isPaid = !isPublicCategory || hasFreeContentHeading;
