@@ -41,5 +41,8 @@ export async function extractPost(
     isPaid,
     characterCount,
     tags,
+    body,
+    paywall: data.paywall === true,
+    freeContentHeading: data.freeContentHeading,
   };
 }

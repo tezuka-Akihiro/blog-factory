@@ -7,6 +7,9 @@ export interface BlogPost {
   isPaid: boolean;
   characterCount: number;
   tags: string[];
+  body: string;
+  paywall?: boolean;
+  freeContentHeading?: string;
 }
 
 export interface SummaryData {
@@ -32,4 +35,17 @@ export interface BlogSpec {
     name: string;
     group: string;
   }>;
+}
+
+export interface BlogStats {
+  categories: Record<string, {
+    count: number;
+    premiumChars: number;
+  }>;
+  total: {
+    count: number;
+    paidCount: number;
+    premiumChars: number;
+  };
+  updatedAt: string;
 }
