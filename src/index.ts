@@ -4,6 +4,7 @@ import { Logger } from './utils/logger';
 import { inspectCommand } from './commands/task/inspect';
 import { summaryCommand } from './commands/task/summary';
 import { infoCommand } from './commands/task/info';
+import { deliveryCommand } from './commands/task/delivery';
 
 dotenv.config();
 
@@ -20,7 +21,12 @@ program
     }
   });
 
-[inspectCommand, summaryCommand, infoCommand].forEach((cmd) => program.addCommand(cmd));
+[
+  inspectCommand,
+  summaryCommand,
+  infoCommand,
+  deliveryCommand,
+].forEach((cmd) => program.addCommand(cmd));
 
 program.parse(process.argv);
 
