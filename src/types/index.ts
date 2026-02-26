@@ -44,6 +44,7 @@ export interface BlogStats {
   }>;
   total: {
     count: number;
+    paidCount: number;
     premiumChars: number;
   };
   updatedAt: string;

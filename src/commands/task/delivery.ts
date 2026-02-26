@@ -7,28 +7,25 @@ import { Logger } from '../../utils/logger';
 import path from 'path';
 import { loadBlogSpec } from '../../utils/spec-loader';
 
-/**
- * Command to calculate blog statistics and deliver them as a TypeScript file.
- */
 export const deliveryCommand = new Command('delivery')
-  .description('Calculate blog statistics and deliver to ClaudeMix frontend')
+  .description('Calculate blog statistics and update subscription spec')
   .action(async () => {
     try {
       const sourcePath = process.env.BLOG_SOURCE_PATH;
-      const statsPath = process.env.CLAUDE_MIX_STATS_PATH;
+      const specPath = process.env.SUBSCRIPTION_SPEC_PATH;
 
       if (!sourcePath) {
-        Logger.error('BLOG_SOURCE_PATH environment variable is not set');
+        Logger.error('BLOG_SOURCE_PATH is not set');
         process.exit(1);
       }
 
-      if (!statsPath) {
-        Logger.error('CLAUDE_MIX_STATS_PATH environment variable is not set');
+      if (!specPath) {
+        Logger.error('SUBSCRIPTION_SPEC_PATH is not set');
         process.exit(1);
       }
 
       const absoluteSourcePath = path.resolve(sourcePath);
-      const absoluteStatsPath = path.resolve(statsPath);
+      const absoluteSpecPath = path.resolve(specPath);
 
       Logger.info('Starting delivery process...');
 
@@ -47,10 +44,9 @@ export const deliveryCommand = new Command('delivery')
       // 3. Stats Task
       const stats = calculateStats(articles);
 
-      // 4. Delivery Task
-      await deliverStats(stats, absoluteStatsPath);
+      await deliverStats(stats, absoluteSpecPath);
 
-      Logger.success('Data delivery completed successfully');
+      Logger.success('Delivery completed');
     } catch (error) {
       Logger.error(`Delivery command failed: ${error instanceof Error ? error.message : String(error)}`);
       process.exit(1);
