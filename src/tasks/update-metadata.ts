@@ -85,29 +85,33 @@ async function updateFileMetadata(
 
   let updatedFrontmatter = frontmatter;
 
+  // Enclose values in double quotes as requested
+  const quotedPublishedAt = `"${metadata.publishedAt}"`;
+  const quotedAuthor = metadata.author ? `"${metadata.author}"` : undefined;
+
   // 1. Update Published At
   const publishedAtRegex = /^(\s*publishedAt:\s*).*$/m;
   const dateRegex = /^(\s*date:\s*).*$/m;
 
   if (publishedAtRegex.test(updatedFrontmatter)) {
-    updatedFrontmatter = updatedFrontmatter.replace(publishedAtRegex, `$1${metadata.publishedAt}`);
+    updatedFrontmatter = updatedFrontmatter.replace(publishedAtRegex, `$1${quotedPublishedAt}`);
   } else if (dateRegex.test(updatedFrontmatter)) {
-    updatedFrontmatter = updatedFrontmatter.replace(dateRegex, `$1${metadata.publishedAt}`);
+    updatedFrontmatter = updatedFrontmatter.replace(dateRegex, `$1${quotedPublishedAt}`);
   } else {
     updatedFrontmatter = updatedFrontmatter.trimEnd();
     if (updatedFrontmatter.length > 0) updatedFrontmatter += '\n';
-    updatedFrontmatter += `publishedAt: ${metadata.publishedAt}`;
+    updatedFrontmatter += `publishedAt: ${quotedPublishedAt}`;
   }
 
   // 2. Update Author (if present in CSV)
-  if (metadata.author) {
+  if (quotedAuthor) {
     const authorRegex = /^(\s*author:\s*).*$/m;
     if (authorRegex.test(updatedFrontmatter)) {
-      updatedFrontmatter = updatedFrontmatter.replace(authorRegex, `$1${metadata.author}`);
+      updatedFrontmatter = updatedFrontmatter.replace(authorRegex, `$1${quotedAuthor}`);
     } else {
       updatedFrontmatter = updatedFrontmatter.trimEnd();
       if (updatedFrontmatter.length > 0) updatedFrontmatter += '\n';
-      updatedFrontmatter += `author: ${metadata.author}`;
+      updatedFrontmatter += `author: ${quotedAuthor}`;
     }
   }
 

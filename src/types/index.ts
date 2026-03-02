@@ -19,7 +19,6 @@ export interface SummaryData {
   totalPosts: number;
   categoryCounts: Record<string, number>;
   tagGroupCounts: Record<string, number>;
-  tagCounts: Record<string, number>;
   paidPostsCount: number;
   totalPaidCharacterCount: number;
 }
