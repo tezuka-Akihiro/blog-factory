@@ -28,6 +28,7 @@ export async function updateMetadataFromCsv(csvPath: string, sourcePath: string)
   for (const record of records) {
     const filePath = record.Path;
     const publishedAt = record['Published At'];
+    const author = record.Author;
 
     if (!filePath) {
       Logger.warn('Skip: Path is missing in CSV row');
@@ -54,24 +55,29 @@ export async function updateMetadataFromCsv(csvPath: string, sourcePath: string)
       continue;
     }
 
-    await updateFilePublishedAt(fullPath, publishedAt);
+    await updateFileMetadata(fullPath, { publishedAt, author });
   }
 }
 
-async function updateFilePublishedAt(filePath: string, newDate: string): Promise<void> {
+async function updateFileMetadata(
+  filePath: string,
+  metadata: { publishedAt: string; author?: string }
+): Promise<void> {
   const content = await fs.readFile(filePath, 'utf-8');
 
-  // Use regex to find publishedAt or date in frontmatter
-  // We want to preserve everything else exactly as is.
-  // Frontmatter is between the first two ---
-  const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  // Use regex to find frontmatter
+  const frontmatterRegex = /^(---\r?\n)([\s\S]*?)(^---)/m;
+  const frontmatterMatch = content.match(frontmatterRegex);
 
   if (!frontmatterMatch) {
     Logger.warn(`Skip: No frontmatter found in ${filePath}`);
     return;
   }
 
-  const frontmatter = frontmatterMatch[1];
+  const opening = frontmatterMatch[1];
+  const frontmatter = frontmatterMatch[2];
+  const closing = frontmatterMatch[3];
+
   if (frontmatter === undefined) {
     Logger.warn(`Skip: Could not extract frontmatter in ${filePath}`);
     return;
@@ -79,16 +85,36 @@ async function updateFilePublishedAt(filePath: string, newDate: string): Promise
 
   let updatedFrontmatter = frontmatter;
 
+  // 1. Update Published At
   const publishedAtRegex = /^(\s*publishedAt:\s*).*$/m;
   const dateRegex = /^(\s*date:\s*).*$/m;
 
-  if (publishedAtRegex.test(frontmatter)) {
-    updatedFrontmatter = frontmatter.replace(publishedAtRegex, `$1${newDate}`);
-  } else if (dateRegex.test(frontmatter)) {
-    updatedFrontmatter = frontmatter.replace(dateRegex, `$1${newDate}`);
+  if (publishedAtRegex.test(updatedFrontmatter)) {
+    updatedFrontmatter = updatedFrontmatter.replace(publishedAtRegex, `$1${metadata.publishedAt}`);
+  } else if (dateRegex.test(updatedFrontmatter)) {
+    updatedFrontmatter = updatedFrontmatter.replace(dateRegex, `$1${metadata.publishedAt}`);
   } else {
-    // If neither exists, add publishedAt at the end of frontmatter
-    updatedFrontmatter = frontmatter + `\npublishedAt: ${newDate}`;
+    updatedFrontmatter = updatedFrontmatter.trimEnd();
+    if (updatedFrontmatter.length > 0) updatedFrontmatter += '\n';
+    updatedFrontmatter += `publishedAt: ${metadata.publishedAt}`;
+  }
+
+  // 2. Update Author (if present in CSV)
+  if (metadata.author) {
+    const authorRegex = /^(\s*author:\s*).*$/m;
+    if (authorRegex.test(updatedFrontmatter)) {
+      updatedFrontmatter = updatedFrontmatter.replace(authorRegex, `$1${metadata.author}`);
+    } else {
+      updatedFrontmatter = updatedFrontmatter.trimEnd();
+      if (updatedFrontmatter.length > 0) updatedFrontmatter += '\n';
+      updatedFrontmatter += `author: ${metadata.author}`;
+    }
+  }
+
+  // Ensure it ends with exactly one newline if not empty
+  updatedFrontmatter = updatedFrontmatter.trimEnd();
+  if (updatedFrontmatter.length > 0) {
+    updatedFrontmatter += '\n';
   }
 
   if (frontmatter === updatedFrontmatter) {
@@ -96,7 +122,9 @@ async function updateFilePublishedAt(filePath: string, newDate: string): Promise
     return;
   }
 
-  const updatedContent = content.replace(frontmatter, updatedFrontmatter);
+  // Reconstruct with original delimiters and body
+  const body = content.slice(frontmatterMatch[0].length);
+  const updatedContent = `${opening}${updatedFrontmatter}${closing}${body}`;
 
   const tempPath = `${filePath}.tmp`;
   await fs.writeFile(tempPath, updatedContent, 'utf-8');
