@@ -8,6 +8,7 @@ export function calculateSummary(
     totalPosts: articles.length,
     categoryCounts: {},
     tagGroupCounts: {},
+    tagCounts: {},
     paidPostsCount: 0,
     totalPaidCharacterCount: 0,
   };
@@ -26,6 +27,7 @@ export function calculateSummary(
       for (const tag of article.tags) {
         const group = tagToGroupMap[tag] || 'その他';
         groupsInArticle.add(group);
+        summary.tagCounts[tag] = (summary.tagCounts[tag] || 0) + 1;
       }
     } else {
       groupsInArticle.add('タグなし');
@@ -62,6 +64,19 @@ export function formatSummaryToMarkdown(summary: SummaryData): string {
   const groups = Object.keys(summary.tagGroupCounts).sort();
   for (const group of groups) {
     md += `- **${group}**: ${summary.tagGroupCounts[group]} 件\n`;
+  }
+  md += '\n';
+
+  md += `## 🏷️ タグ別記事数\n\n`;
+  const sortedTags = Object.entries(summary.tagCounts).sort((a, b) => {
+    if (b[1] !== a[1]) {
+      return b[1] - a[1];
+    }
+    return a[0].localeCompare(b[0]);
+  });
+
+  for (const [tag, count] of sortedTags) {
+    md += `- **${tag}**: ${count} 件\n`;
   }
 
   return md;
