@@ -8,7 +8,8 @@
     "inspect": "ts-node src/index.ts inspect",
     "summary": "ts-node src/index.ts summary",
     "info": "ts-node src/index.ts info",
-    "delivery": "ts-node src/index.ts delivery"
+    "delivery": "ts-node src/index.ts delivery",
+    "export": "ts-node src/index.ts export"
   },
   "repository": {
     "type": "git",

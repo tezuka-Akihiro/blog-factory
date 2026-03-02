@@ -18,6 +18,9 @@ export async function extractPost(
   const description = data.description || '';
   const tags = Array.isArray(data.tags) ? data.tags : [];
   const lastModified = data.updatedAt || stats.mtime.toISOString();
+  const slug = data.slug || '';
+  const publishedAt = data.publishedAt || '';
+  const author = data.author || '';
 
   const characterCount = body.replace(/\s/g, '').length;
 
@@ -42,6 +45,9 @@ export async function extractPost(
     characterCount,
     tags,
     body,
+    slug,
+    publishedAt: typeof publishedAt === 'string' ? publishedAt : publishedAt?.toISOString?.() || String(publishedAt),
+    author,
     paywall: data.paywall === true,
     freeContentHeading: data.freeContentHeading,
   };

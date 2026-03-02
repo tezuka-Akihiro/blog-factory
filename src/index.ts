@@ -5,6 +5,7 @@ import { inspectCommand } from './commands/task/inspect';
 import { summaryCommand } from './commands/task/summary';
 import { infoCommand } from './commands/task/info';
 import { deliveryCommand } from './commands/task/delivery';
+import { exportCommand } from './commands/task/export';
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ program
   summaryCommand,
   infoCommand,
   deliveryCommand,
+  exportCommand,
 ].forEach((cmd) => program.addCommand(cmd));
 
 program.parse(process.argv);
