@@ -6,6 +6,7 @@ import { summaryCommand } from './commands/task/summary';
 import { infoCommand } from './commands/task/info';
 import { deliveryCommand } from './commands/task/delivery';
 import { exportCommand } from './commands/task/export';
+import { updateMetadataCommand } from './commands/task/update-metadata';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ program
   infoCommand,
   deliveryCommand,
   exportCommand,
+  updateMetadataCommand,
 ].forEach((cmd) => program.addCommand(cmd));
 
 program.parse(process.argv);
