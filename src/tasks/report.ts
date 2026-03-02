@@ -17,6 +17,18 @@ export async function saveReport(result: InspectionResult): Promise<string> {
   return filePath;
 }
 
+export async function saveExportFile(content: string, filename: string): Promise<string> {
+  const resultsDir = join(process.cwd(), 'results');
+  await mkdir(resultsDir, { recursive: true });
+
+  const filePath = join(resultsDir, filename);
+
+  await writeFile(filePath, content, 'utf-8');
+  Logger.success(`Export file saved to ${filePath}`);
+
+  return filePath;
+}
+
 export async function saveMarkdownReport(content: string, filename: string = 'summary.md'): Promise<string> {
   const resultsDir = join(process.cwd(), 'results');
   await mkdir(resultsDir, { recursive: true });

@@ -8,6 +8,9 @@ export interface BlogPost {
   characterCount: number;
   tags: string[];
   body: string;
+  slug: string;
+  publishedAt?: string;
+  author?: string;
   paywall?: boolean;
   freeContentHeading?: string;
 }
