@@ -145,8 +145,6 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
     <!-- PAGE 1: 経営デザインシート -->
     <div class="page">
         <div class="owner-header">
-            <div class="owner-name">${strategy.owner.name}</div>
-            <div class="owner-role">${strategy.owner.role}</div>
             <div style="font-size: 10pt; color: #999;">作成日: ${new Date().toLocaleDateString('ja-JP')}</div>
         </div>
         <h1>経営デザインシート</h1>
@@ -217,8 +215,6 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
     <!-- PAGE 2: 経営診断書 -->
     <div class="page">
         <div class="owner-header">
-            <div class="owner-name">${strategy.owner.name}</div>
-            <div class="owner-role">${strategy.owner.role}</div>
             <div style="font-size: 10pt; color: #999;">作成日: ${new Date().toLocaleDateString('ja-JP')}</div>
         </div>
         <h1>経営診断書 (Management Diagnosis)</h1>
