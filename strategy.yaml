@@ -1,0 +1,36 @@
+owner:
+  name: "優作"
+  role: "システムの延命医"
+
+historical_context:
+  resources:
+    - "Webアプリ開発6年の知見に基づく延命術"
+    - "既存{{ARTICLE_COUNT}}記事のストック資産"
+  business_model: "Web標準(Remix)への回帰と不自然さの排除"
+  value: "エンジニア向け生存戦略の提供"
+
+future_ideal:
+  resources:
+    - "自立した「防衛拠点」の確立"
+    - "月間利益10万円（有料会員200〜333名獲得）"
+  business_model: "既存記事のAIナレッジ構造化とAI共進化"
+  value: "優しい人が優しいまま自立して生きられる世界の実現"
+
+strategic_challenges:
+  - "設計負債からの解放と5〜10年の生存保証"
+  - "AIナレッジ構造化の自動化プロセスの効率化"
+
+external_environment:
+  opportunity:
+    - "AIによるナレッジ構造化コストの劇的低下"
+    - "既存エンジニアの生存不安増大に伴う羅針盤需要"
+  threat:
+    - "プラットフォーム依存によるアルゴリズム変更リスク"
+    - "生成AIによる低品質コンテンツの氾濫"
+
+consultation_items:
+  - "価値創造の流れにおける収益化動線の妥当性"
+  - "既存{{ARTICLE_COUNT}}記事の資産化に向けた優先順位"
+
+performance_manual:
+  update_frequency: "週1〜2本ペース（目標）"

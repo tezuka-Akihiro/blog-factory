@@ -24,9 +24,10 @@ export async function extractPost(
 
   const characterCount = body.replace(/\s/g, '').length;
 
-  const isPublicCategory = publicCategories.includes(category);
+  const isPublicCategory = Array.isArray(publicCategories) && publicCategories.includes(category);
   const hasFreeContentHeading = !!data.freeContentHeading;
   const isPaid = !isPublicCategory || hasFreeContentHeading;
+  const jsonLd = data.jsonLd === true;
 
   if (!title) {
     Logger.warn(`Title is missing in ${filePath}`);
@@ -50,5 +51,6 @@ export async function extractPost(
     author,
     paywall: data.paywall === true,
     freeContentHeading: data.freeContentHeading,
+    jsonLd,
   };
 }

@@ -13,6 +13,7 @@ export interface BlogPost {
   author?: string;
   paywall?: boolean;
   freeContentHeading?: string;
+  jsonLd?: boolean;
 }
 
 export interface SummaryData {
@@ -51,4 +52,30 @@ export interface BlogStats {
     premiumChars: number;
   };
   updatedAt: string;
+}
+
+export interface D1MonitoringReport {
+  id: number;
+  level: 'Critical' | 'Warning' | 'Info';
+  message: string;
+  timestamp: string;
+}
+
+export interface ReportData {
+  strategy: import('./strategy').Strategy;
+  stats: {
+    totalArticles: number;
+    last30DaysUpdates: number;
+    jsonLdCoverage: number;
+    lighthouseScore: number;
+    monitoring: {
+      criticalCount: number;
+      warningCount: number;
+    };
+    traffic: {
+      pv: number | string;
+      uu: number | string;
+      avgStayTime: number | string;
+    };
+  };
 }
