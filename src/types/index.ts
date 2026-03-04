@@ -55,10 +55,12 @@ export interface BlogStats {
 }
 
 export interface D1MonitoringReport {
-  id: number;
-  level: 'Critical' | 'Warning' | 'Info';
+  id: string;
+  type: string;
+  status: string;
+  severity: 'CRITICAL' | 'WARNING' | 'INFO';
   message: string;
-  timestamp: string;
+  created_at: string;
 }
 
 export interface ReportData {
@@ -71,6 +73,12 @@ export interface ReportData {
     monitoring: {
       criticalCount: number;
       warningCount: number;
+      errorRate: string;
+    };
+    business: {
+      paidMembers: number;
+      freeMembers: number;
+      activeSubscriptions: number;
     };
     traffic: {
       pv: number | string;
