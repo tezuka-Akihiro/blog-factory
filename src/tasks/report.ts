@@ -67,15 +67,14 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
         /* Modern CSS Reset */
         *, *::before, *::after { box-sizing: border-box; }
         * { margin: 0; }
-        body { line-height: 1.4; -webkit-font-smoothing: antialiased; font-size: 9pt; color: #333; background-color: #fff; }
+        body { line-height: 1.3; -webkit-font-smoothing: antialiased; font-size: 12pt; color: #333; background-color: #fff; }
 
         /* Page Layout */
         .page {
             width: 420mm;
             height: 297mm;
-            padding: 15mm;
+            padding: 10mm 15mm;
             margin: 0 auto;
-            page-break-after: always;
             position: relative;
             overflow: hidden;
             background: white;
@@ -89,40 +88,45 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
         }
 
         /* Typography & Components */
-        h1 { font-size: 18px; font-weight: bold; color: #001f3f; border-bottom: 2px solid #001f3f; margin-bottom: 10px; padding-bottom: 5px; }
-        .owner-header { position: absolute; top: 10mm; right: 10mm; text-align: right; }
+        h1 { font-size: 15pt; font-weight: bold; color: #001f3f; border-bottom: 2px solid #001f3f; margin-bottom: 8px; padding-bottom: 4px; }
+        .owner-header { position: absolute; top: 8mm; right: 15mm; text-align: right; }
         .owner-name { font-weight: bold; font-size: 14pt; }
-        .owner-role { font-size: 9pt; color: #666; }
+        .owner-role { font-size: 12pt; color: #666; }
 
-        /* Management Design Sheet Layout (Page 1) */
+        /* Management Design Sheet Layout */
         .sheet-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .main-design-area {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto 1fr auto;
-            height: calc(100% - 40px);
-            gap: 20px;
+            gap: 15px;
             position: relative;
+            margin-bottom: 10px;
         }
 
         .external-env {
             position: absolute;
-            top: 60px;
+            top: 40px;
             right: 0;
-            width: 180px;
+            width: 200px;
             z-index: 10;
         }
 
         .env-box {
             border: 1px solid #001f3f;
-            padding: 8px;
-            margin-bottom: 10px;
+            padding: 6px;
+            margin-bottom: 8px;
             background: #f8fafc;
-            min-height: 100px; /* Fixed height for writing space */
+            min-height: 80px;
             display: flex;
             flex-direction: column;
         }
-        .env-title { font-weight: bold; font-size: 9pt; color: #001f3f; border-bottom: 1px solid #001f3f; margin-bottom: 3px; }
-        .env-list { list-style: none; padding: 0; font-size: 9pt; flex-grow: 1; }
+        .env-title { font-weight: bold; font-size: 12pt; color: #001f3f; border-bottom: 1px solid #001f3f; margin-bottom: 2px; }
+        .env-list { list-style: none; padding: 0; font-size: 12pt; flex-grow: 1; }
 
         .circle-area {
             border: 1px solid #001f3f;
@@ -131,7 +135,7 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 30px;
+            padding: 20px;
             aspect-ratio: 1 / 1;
             position: relative;
             background: #fff;
@@ -139,57 +143,29 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
 
         .circle-label {
             position: absolute;
-            top: -12px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
             background: white;
-            padding: 0 15px;
+            padding: 0 12px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13pt;
             color: #001f3f;
             white-space: nowrap;
             border: 1px solid #001f3f;
-            border-radius: 15px;
+            border-radius: 12px;
         }
 
         .layer-box {
-            width: 90%;
+            width: 85%;
             border: 1px solid #eee;
-            margin-bottom: 8px;
-            padding: 6px;
+            margin-bottom: 5px;
+            padding: 5px;
             background: #fff;
-            min-height: 90px; /* Writing space */
+            min-height: 85px;
         }
-        .layer-title { font-weight: bold; font-size: 10pt; color: #001f3f; margin-bottom: 3px; border-left: 3px solid #001f3f; padding-left: 5px; }
-        .layer-content { font-size: 9pt; line-height: 1.3; }
-
-        .transition-area {
-            grid-column: 1 / 3;
-            border-top: 2px dashed #001f3f;
-            margin-top: 20px;
-            padding-top: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .transition-label { font-weight: bold; font-size: 14px; color: #001f3f; margin-bottom: 10px; }
-        .challenges-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            width: 100%;
-        }
-        .challenge-item {
-            border: 1px solid #001f3f;
-            padding: 10px;
-            background: #f0f4f8;
-            font-weight: bold;
-            text-align: center;
-            min-height: 100px; /* Expanded for more space */
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
+        .layer-title { font-weight: bold; font-size: 12pt; color: #001f3f; margin-bottom: 2px; border-left: 3px solid #001f3f; padding-left: 4px; }
+        .layer-content { font-size: 12pt; line-height: 1.2; }
 
         .arrow-connector {
             position: absolute;
@@ -201,233 +177,227 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
             flex-direction: column;
             align-items: center;
         }
-        .arrow-connector::before {
-            content: "";
-            width: 100px;
-            height: 2px;
-            background: #001f3f;
-            margin-bottom: -13px;
-        }
         .arrow-connector::after {
             content: "▶";
-            font-size: 24px;
+            font-size: 20pt;
             color: #001f3f;
             background: white;
             padding: 0 5px;
         }
 
-        /* Performance Metrics & Agenda (Page 2) */
-        .stats-section {
+        .bottom-integrated-area {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 30px;
+            border-top: 2px dashed #001f3f;
+            padding-top: 15px;
+        }
+
+        .transition-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #001f3f;
+            border-radius: 50px;
+            padding: 20px;
+            background: #fcfcfc;
+        }
+        .section-label { font-weight: bold; font-size: 14pt; color: #001f3f; margin-bottom: 8px; }
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+        }
+        .challenge-item {
+            border-bottom: 1px solid #001f3f;
+            padding: 8px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-size: 12pt;
+        }
+
+        /* Performance & Agenda */
+        .data-column {
+            display: flex;
+            flex-direction: column;
+        }
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-top: 20px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         .stat-card {
             border: 1px solid #e5e7eb;
-            padding: 15px;
+            padding: 8px;
             text-align: center;
         }
-        .stat-label { font-size: 9pt; color: #666; margin-bottom: 5px; }
-        .stat-value { font-size: 24px; font-weight: bold; color: #001f3f; }
+        .stat-label { font-size: 11pt; color: #666; margin-bottom: 2px; }
+        .stat-value { font-size: 20pt; font-weight: bold; color: #001f3f; }
 
-        .agenda-section { margin-top: 40px; }
         .agenda-list { list-style: none; padding: 0; }
         .agenda-item {
-            padding: 8px;
+            padding: 4px;
             border-bottom: 1px solid #eee;
             display: flex;
             align-items: flex-start;
-            font-size: 9pt;
+            font-size: 12pt;
         }
         .agenda-item::before {
             content: "■";
             color: #001f3f;
-            margin-right: 10px;
+            margin-right: 8px;
         }
         .agenda-memo {
-            margin-top: 15px;
-            padding: 10px;
+            margin-top: 8px;
+            padding: 8px;
             border: 1px dashed #ccc;
-            min-height: 150px;
-            font-size: 9pt;
+            min-height: 100px;
+            font-size: 11pt;
             color: #666;
         }
 
         .footer {
             position: absolute;
-            bottom: 10mm;
-            left: 10mm;
-            right: 10mm;
-            font-size: 9pt;
+            bottom: 5mm;
+            left: 15mm;
+            right: 15mm;
+            font-size: 10pt;
             color: #999;
             text-align: center;
             border-top: 1px solid #eee;
-            padding-top: 5px;
+            padding-top: 3px;
         }
     </style>
 </head>
 <body>
-    <!-- Page 1: 経営デザインシート -->
     <div class="page">
         <div class="owner-header">
             <div class="owner-name">${strategy.owner.name}</div>
             <div class="owner-role">${strategy.owner.role}</div>
-            <div style="font-size: 9pt; color: #999;">作成日: ${new Date().toLocaleDateString('ja-JP')}</div>
+            <div style="font-size: 11pt; color: #999;">作成日: ${new Date().toLocaleDateString('ja-JP')}</div>
         </div>
-        <h1>経営デザインシート (価値創造ストーリー)</h1>
+        <h1>経営デザインシート (統合事業報告)</h1>
 
         <div class="sheet-container">
-            <!-- External Environment -->
-            <div class="external-env">
-                <div class="env-box">
-                    <div class="env-title">機会 (Opportunity)</div>
-                    <ul class="env-list">
-                        ${strategy.external_environment.opportunity.map(o => `<li>・${o}</li>`).join('')}
-                    </ul>
-                    <div style="margin-top: auto; border-bottom: 1px dotted #ccc; height: 13pt;"></div>
-                    <div style="border-bottom: 1px dotted #ccc; height: 13pt;"></div>
-                </div>
-                <div class="env-box">
-                    <div class="env-title">脅威 (Threat)</div>
-                    <ul class="env-list">
-                        ${strategy.external_environment.threat.map(t => `<li>・${t}</li>`).join('')}
-                    </ul>
-                    <div style="margin-top: auto; border-bottom: 1px dotted #ccc; height: 13pt;"></div>
-                    <div style="border-bottom: 1px dotted #ccc; height: 13pt;"></div>
-                </div>
-            </div>
-
-            <!-- Left Circle: Past/Present -->
-            <div style="display: flex; justify-content: flex-end; align-items: center; padding-right: 80px;">
-                <div class="circle-area" style="width: 450px; height: 450px;">
-                    <div class="circle-label">これまで (現状・実績)</div>
-
-                    <div class="layer-box">
-                        <div class="layer-title">資源 (Resources)</div>
-                        <div class="layer-content">${strategy.historical_context.resources.join('<br>')}</div>
-                        <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
+            <!-- Middle: Main Design Area -->
+            <div class="main-design-area">
+                <!-- External Environment -->
+                <div class="external-env">
+                    <div class="env-box">
+                        <div class="env-title">機会 (Opportunity)</div>
+                        <ul class="env-list">
+                            ${strategy.external_environment.opportunity.map(o => `<li>・${o}</li>`).join('')}
+                        </ul>
+                        <div style="margin-top: auto; border-bottom: 1px dotted #ccc; height: 13pt;"></div>
                     </div>
-                    <div class="layer-box">
-                        <div class="layer-title">事業モデル (Business Model)</div>
-                        <div class="layer-content">${strategy.historical_context.business_model}</div>
-                        <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
-                    </div>
-                    <div class="layer-box">
-                        <div class="layer-title">価値 (Value Proposition)</div>
-                        <div class="layer-content">${strategy.historical_context.value}</div>
-                        <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
+                    <div class="env-box">
+                        <div class="env-title">脅威 (Threat)</div>
+                        <ul class="env-list">
+                            ${strategy.external_environment.threat.map(t => `<li>・${t}</li>`).join('')}
+                        </ul>
+                        <div style="margin-top: auto; border-bottom: 1px dotted #ccc; height: 13pt;"></div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Arrow -->
-            <div class="arrow-connector"></div>
-
-            <!-- Right Circle: Future/Ideal -->
-            <div style="display: flex; justify-content: flex-start; align-items: center; padding-left: 80px;">
-                <div class="circle-area" style="width: 450px; height: 450px;">
-                    <div class="circle-label">これから (将来・理想)</div>
-
-                    <div class="layer-box">
-                        <div class="layer-title">資源 (Resources)</div>
-                        <div class="layer-content">${strategy.future_ideal.resources.join('<br>')}</div>
-                        <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
-                    </div>
-                    <div class="layer-box">
-                        <div class="layer-title">事業モデル (Business Model)</div>
-                        <div class="layer-content">${strategy.future_ideal.business_model}</div>
-                        <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
-                    </div>
-                    <div class="layer-box">
-                        <div class="layer-title">価値 (Value Proposition)</div>
-                        <div class="layer-content">${strategy.future_ideal.value}</div>
-                        <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bottom: Challenges/Actions -->
-            <div class="transition-area">
-                <div class="transition-label">移行期の課題・アクション</div>
-                <div class="challenges-grid">
-                    ${strategy.strategic_challenges.map(c => `
-                        <div class="challenge-item">
-                            <div>${c}</div>
-                            <div style="margin-top: auto; border-bottom: 1px dotted #001f3f; height: 13pt;"></div>
-                            <div style="border-bottom: 1px dotted #001f3f; height: 13pt;"></div>
+                <!-- Left Circle -->
+                <div style="display: flex; justify-content: flex-end; align-items: center; padding-right: 60px;">
+                    <div class="circle-area" style="width: 400px; height: 400px;">
+                        <div class="circle-label">これまで (現状・実績)</div>
+                        <div class="layer-box">
+                            <div class="layer-title">資源 (Resources)</div>
+                            <div class="layer-content">${strategy.historical_context.resources.join(', ')}</div>
+                            <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
                         </div>
-                    `).join('')}
-                </div>
-            </div>
-        </div>
-        <div class="footer">Confidential - 経営デザインシート 標準様式準拠</div>
-    </div>
-
-    <!-- Page 2: 実績報告・相談事項 -->
-    <div class="page">
-        <h1>実績報告 (Performance Metrics)</h1>
-
-        <div class="stats-section">
-            <div class="stat-card">
-                <div class="stat-label">総記事数</div>
-                <div class="stat-value">${stats.totalArticles}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">30日以内更新</div>
-                <div class="stat-value">${stats.last30DaysUpdates}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">JSON-LD 網羅率</div>
-                <div class="stat-value">${stats.jsonLdCoverage}%</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">運用目標</div>
-                <div style="font-size: 14px; font-weight: bold; color: #001f3f; margin-top: 10px;">
-                    ${strategy.performance_manual ? strategy.performance_manual.update_frequency : '-'}
-                </div>
-            </div>
-        </div>
-
-        <div style="margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div style="border: 1px solid #e5e7eb; padding: 20px;">
-                <div class="stat-label" style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">システム健康度 (直近7日間)</div>
-                <div style="display: flex; justify-content: space-around;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 9pt; color: #ef4444; font-weight: bold;">CRITICAL</div>
-                        <div style="font-size: 20px; font-weight: bold;">${stats.monitoring.criticalCount}</div>
+                        <div class="layer-box">
+                            <div class="layer-title">事業モデル</div>
+                            <div class="layer-content">${strategy.historical_context.business_model}</div>
+                        </div>
+                        <div class="layer-box">
+                            <div class="layer-title">提供価値</div>
+                            <div class="layer-content">${strategy.historical_context.value}</div>
+                        </div>
                     </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 9pt; color: #f59e0b; font-weight: bold;">WARNING</div>
-                        <div style="font-size: 20px; font-weight: bold;">${stats.monitoring.warningCount}</div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="arrow-connector"></div>
+
+                <!-- Right Circle -->
+                <div style="display: flex; justify-content: flex-start; align-items: center; padding-left: 60px;">
+                    <div class="circle-area" style="width: 400px; height: 400px;">
+                        <div class="circle-label">これから (将来・理想)</div>
+                        <div class="layer-box">
+                            <div class="layer-title">資源 (Resources)</div>
+                            <div class="layer-content">${strategy.future_ideal.resources.join(', ')}</div>
+                            <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
+                        </div>
+                        <div class="layer-box">
+                            <div class="layer-title">事業モデル</div>
+                            <div class="layer-content">${strategy.future_ideal.business_model}</div>
+                        </div>
+                        <div class="layer-box">
+                            <div class="layer-title">提供価値</div>
+                            <div class="layer-content">${strategy.future_ideal.value}</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div style="border: 1px solid #e5e7eb; padding: 20px; display: flex; flex-direction: column; justify-content: center;">
-                <div class="stat-label" style="text-align: center;">トラフィック (月間)</div>
-                <div style="display: flex; justify-content: space-around; margin-top: 10px;">
-                    <div>PV: <span style="font-weight: bold;">${stats.traffic.pv}</span></div>
-                    <div>UU: <span style="font-weight: bold;">${stats.traffic.uu}</span></div>
+
+            <!-- Bottom: Integrated Info -->
+            <div class="bottom-integrated-area">
+                <!-- Transition/Challenges (Oval Shape) -->
+                <div class="transition-column">
+                    <div class="section-label">移行期の課題・アクション</div>
+                    <div class="challenges-grid">
+                        ${strategy.strategic_challenges.map(c => `
+                            <div class="challenge-item">
+                                <div>${c}</div>
+                                <div style="margin-top: 8pt; border-bottom: 1px dotted #001f3f; height: 13pt;"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Metrics & Agenda -->
+                <div class="data-column">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">記事数</div>
+                            <div class="stat-value">${stats.totalArticles}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">JSON-LD</div>
+                            <div class="stat-value">${stats.jsonLdCoverage}%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">CRITICAL</div>
+                            <div class="stat-value" style="color: #ef4444;">${stats.monitoring.criticalCount}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">UU</div>
+                            <div class="stat-value">${stats.traffic.uu}</div>
+                        </div>
+                    </div>
+
+                    <div class="agenda-list">
+                        <div class="section-label" style="font-size: 12pt; border-bottom: 1px solid #001f3f; margin-bottom: 5px;">相談事項 & メモ</div>
+                        ${strategy.consultation_items.map(item => `<div class="agenda-item">${item}</div>`).join('')}
+                        <div class="agenda-memo">
+                            <div style="border-bottom: 1px solid #eee; height: 13pt;"></div>
+                            <div style="margin-top: 13pt; border-bottom: 1px solid #eee; height: 13pt;"></div>
+                            <div style="margin-top: 13pt; border-bottom: 1px solid #eee; height: 13pt;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="agenda-section">
-            <h1 style="font-size: 14px; border-bottom: 1px solid #001f3f;">本日の相談事項 (Consultation Agenda)</h1>
-            <ul class="agenda-list">
-                ${strategy.consultation_items.map(item => `<li class="agenda-item">${item}</li>`).join('')}
-            </ul>
-            <div class="agenda-memo">
-                <strong>■ 追記・メモ：</strong>
-                <div style="margin-top: 13pt; border-bottom: 1px solid #eee; height: 13pt;"></div>
-                <div style="margin-top: 13pt; border-bottom: 1px solid #eee; height: 13pt;"></div>
-                <div style="margin-top: 13pt; border-bottom: 1px solid #eee; height: 13pt;"></div>
-                <div style="margin-top: 13pt; border-bottom: 1px solid #eee; height: 13pt;"></div>
-                <div style="margin-top: 13pt; border-bottom: 1px solid #eee; height: 13pt;"></div>
-            </div>
-        </div>
-
-        <div class="footer">© ${new Date().getFullYear()} 技術本 2.0 延命計画 - 経営デザインシート補足資料</div>
+        <div class="footer">Confidential - 経営デザインシート 標準様式準拠 (統合版)</div>
     </div>
 </body>
 </html>
