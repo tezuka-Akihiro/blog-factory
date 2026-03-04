@@ -1,22 +1,41 @@
 # strategy.yaml
-owner:
-  name: "優作"
-  role: "システムの延命医"
+vision:
+  catchphrase: "優しい人が優しいまま自立して生きられる世界を、技術で守り抜く。"
 
-management_design:
-  past_present:
-    experience: "Webアプリ開発6年の知見に基づく延命術"
-    core_philosophy: "Web標準(Remix)への回帰と不自然さの排除"
-  value_creation:
-    mechanism: "既存記事のAIナレッジ構造化とAI共進化"
-    benefit: "設計負債からの解放と5〜10年の生存保証"
-  future_vision:
-    profit_goal: "月間利益10万円（有料会員200〜333名獲得）"
-    social_impact: "優しい人が優しいまま自立して生きられる世界の実現"
+historical_context:
+  assets:
+    - "Webアプリ開発6年の知見（延命術）"
+    - "既存67記事のストック資産"
+    - "Web標準(Remix)に準拠した堅牢な基盤"
+  business_model: "高品質な技術知見の構造化提供"
+  value_offered: "設計負債からの解放と5〜10年の生存保証"
 
-performance_manual:
-  update_frequency: "週x本ペース（目標）"
+future_ideal:
+  target_date: "2026年"
+  best_strength: "AIと人間が共進化する国内有数のナレッジ拠点"
 
-today_agenda:
+  external_environment:
+    opportunity:
+      - "AIによるナレッジ構造化コストの激減"
+      - "個人の発信力・自律性の重要度向上"
+    threat:
+      - "情報のコモディティ化による差別化の困難さ"
+      - "技術トレンドの急激な変化"
+
+  business_model:
+    target_audience: "自立を目指すエンジニア・クリエイター"
+    offering: "AI共進化ナレッジと生存戦略"
+    how_to_deliver: "サブスクリプション型・防衛拠点コミュニティ"
+  value_offered: "月間利益10万円の獲得と精神的自立"
+
+strategic_challenges:
+  weakness_to_solve:
+    - "既存記事の資産化に向けたメタデータ整備"
+    - "収益化動線の未確立"
+  actions:
+    - "JSON-LD網羅率の向上"
+    - "プレミアムコンテンツの拡充"
+
+consultation_items:
   - "価値創造の流れにおける収益化動線の妥当性"
   - "既存67記事の資産化に向けた優先順位"

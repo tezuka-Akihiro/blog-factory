@@ -1,24 +1,29 @@
 export interface Strategy {
-  owner: {
-    name: string;
-    role: string;
+  vision: {
+    catchphrase: string;
   };
-  management_design: {
-    past_present: {
-      experience: string;
-      core_philosophy: string;
-    };
-    value_creation: {
-      mechanism: string;
-      benefit: string;
-    };
-    future_vision: {
-      profit_goal: string;
-      social_impact: string;
-    };
+  historical_context: {
+    assets: string[];
+    business_model: string;
+    value_offered: string;
   };
-  performance_manual: {
-    update_frequency: string;
+  future_ideal: {
+    target_date: string;
+    best_strength: string;
+    external_environment: {
+      opportunity: string[];
+      threat: string[];
+    };
+    business_model: {
+      target_audience: string;
+      offering: string;
+      how_to_deliver: string;
+    };
+    value_offered: string;
   };
-  today_agenda: string[];
+  strategic_challenges: {
+    weakness_to_solve: string[];
+    actions: string[];
+  };
+  consultation_items: string[];
 }
