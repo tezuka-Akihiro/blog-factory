@@ -13,6 +13,42 @@ export interface BlogPost {
   author?: string;
   paywall?: boolean;
   freeContentHeading?: string;
+  jsonLd?: boolean;
+}
+
+export interface D1User {
+  id: string;
+  subscription_status: string;
+  created_at: string;
+}
+
+export interface D1Subscription {
+  status: string;
+  created_at: string;
+}
+
+export interface D1MonitoringReport {
+  severity: 'CRITICAL' | 'WARNING';
+  created_at: string;
+}
+
+export interface ReportData {
+  generatedAt: string;
+  members: {
+    total: number;
+    paid: number;
+    recentChange30Days: number;
+  };
+  content: {
+    totalPosts: number;
+    jsonLdCoverageRate: number;
+  };
+  system: {
+    errorsLast7Days: {
+      critical: number;
+      warning: number;
+    };
+  };
 }
 
 export interface SummaryData {

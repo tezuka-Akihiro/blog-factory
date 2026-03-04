@@ -50,5 +50,6 @@ export async function extractPost(
     author,
     paywall: data.paywall === true,
     freeContentHeading: data.freeContentHeading,
+    jsonLd: data.jsonLd === true,
   };
 }
