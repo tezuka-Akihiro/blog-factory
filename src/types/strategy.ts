@@ -20,6 +20,10 @@ export interface Strategy {
       milestone: string;
     };
   };
+  external_environment?: {
+    opportunity: string[];
+    threat: string[];
+  };
   performance_manual: {
     update_frequency: string;
   };
