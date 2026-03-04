@@ -10,7 +10,8 @@
     "info": "ts-node src/index.ts info",
     "delivery": "ts-node src/index.ts delivery",
     "export": "ts-node src/index.ts export",
-    "update-metadata": "ts-node src/index.ts update-metadata"
+    "update-metadata": "ts-node src/index.ts update-metadata",
+    "report": "ts-node src/index.ts report"
   },
   "repository": {
     "type": "git",
