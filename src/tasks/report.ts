@@ -67,7 +67,7 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
         /* Modern CSS Reset */
         *, *::before, *::after { box-sizing: border-box; }
         * { margin: 0; }
-        body { line-height: 1.4; -webkit-font-smoothing: antialiased; font-size: 11px; color: #333; background-color: #fff; }
+        body { line-height: 1.4; -webkit-font-smoothing: antialiased; font-size: 9pt; color: #333; background-color: #fff; }
 
         /* Page Layout */
         .page {
@@ -91,8 +91,8 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
         /* Typography & Components */
         h1 { font-size: 18px; font-weight: bold; color: #001f3f; border-bottom: 2px solid #001f3f; margin-bottom: 10px; padding-bottom: 5px; }
         .owner-header { position: absolute; top: 10mm; right: 10mm; text-align: right; }
-        .owner-name { font-weight: bold; font-size: 14px; }
-        .owner-role { font-size: 10px; color: #666; }
+        .owner-name { font-weight: bold; font-size: 14pt; }
+        .owner-role { font-size: 9pt; color: #666; }
 
         /* Management Design Sheet Layout (Page 1) */
         .sheet-container {
@@ -117,9 +117,12 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
             padding: 8px;
             margin-bottom: 10px;
             background: #f8fafc;
+            min-height: 100px; /* Fixed height for writing space */
+            display: flex;
+            flex-direction: column;
         }
-        .env-title { font-weight: bold; font-size: 9px; color: #001f3f; border-bottom: 1px solid #001f3f; margin-bottom: 3px; }
-        .env-list { list-style: none; padding: 0; font-size: 8px; }
+        .env-title { font-weight: bold; font-size: 9pt; color: #001f3f; border-bottom: 1px solid #001f3f; margin-bottom: 3px; }
+        .env-list { list-style: none; padding: 0; font-size: 9pt; flex-grow: 1; }
 
         .circle-area {
             border: 1px solid #001f3f;
@@ -155,9 +158,10 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
             margin-bottom: 8px;
             padding: 6px;
             background: #fff;
+            min-height: 90px; /* Writing space */
         }
-        .layer-title { font-weight: bold; font-size: 10px; color: #001f3f; margin-bottom: 3px; border-left: 3px solid #001f3f; padding-left: 5px; }
-        .layer-content { font-size: 10px; }
+        .layer-title { font-weight: bold; font-size: 10pt; color: #001f3f; margin-bottom: 3px; border-left: 3px solid #001f3f; padding-left: 5px; }
+        .layer-content { font-size: 9pt; line-height: 1.3; }
 
         .transition-area {
             grid-column: 1 / 3;
@@ -181,6 +185,10 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
             background: #f0f4f8;
             font-weight: bold;
             text-align: center;
+            min-height: 100px; /* Expanded for more space */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
         .arrow-connector {
@@ -220,21 +228,30 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
             padding: 15px;
             text-align: center;
         }
-        .stat-label { font-size: 10px; color: #666; margin-bottom: 5px; }
+        .stat-label { font-size: 9pt; color: #666; margin-bottom: 5px; }
         .stat-value { font-size: 24px; font-weight: bold; color: #001f3f; }
 
         .agenda-section { margin-top: 40px; }
         .agenda-list { list-style: none; padding: 0; }
         .agenda-item {
-            padding: 10px;
+            padding: 8px;
             border-bottom: 1px solid #eee;
             display: flex;
             align-items: flex-start;
+            font-size: 9pt;
         }
         .agenda-item::before {
             content: "■";
             color: #001f3f;
             margin-right: 10px;
+        }
+        .agenda-memo {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            min-height: 150px;
+            font-size: 9pt;
+            color: #666;
         }
 
         .footer {
@@ -242,7 +259,7 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
             bottom: 10mm;
             left: 10mm;
             right: 10mm;
-            font-size: 8px;
+            font-size: 9pt;
             color: #999;
             text-align: center;
             border-top: 1px solid #eee;
@@ -256,7 +273,7 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
         <div class="owner-header">
             <div class="owner-name">${strategy.owner.name}</div>
             <div class="owner-role">${strategy.owner.role}</div>
-            <div style="font-size: 9px; color: #999;">作成日: ${new Date().toLocaleDateString('ja-JP')}</div>
+            <div style="font-size: 9pt; color: #999;">作成日: ${new Date().toLocaleDateString('ja-JP')}</div>
         </div>
         <h1>経営デザインシート (価値創造ストーリー)</h1>
 
@@ -268,12 +285,16 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
                     <ul class="env-list">
                         ${strategy.external_environment.opportunity.map(o => `<li>・${o}</li>`).join('')}
                     </ul>
+                    <div style="margin-top: auto; border-bottom: 1px dotted #ccc; height: 13pt;"></div>
+                    <div style="border-bottom: 1px dotted #ccc; height: 13pt;"></div>
                 </div>
                 <div class="env-box">
                     <div class="env-title">脅威 (Threat)</div>
                     <ul class="env-list">
                         ${strategy.external_environment.threat.map(t => `<li>・${t}</li>`).join('')}
                     </ul>
+                    <div style="margin-top: auto; border-bottom: 1px dotted #ccc; height: 13pt;"></div>
+                    <div style="border-bottom: 1px dotted #ccc; height: 13pt;"></div>
                 </div>
             </div>
 
@@ -285,14 +306,17 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
                     <div class="layer-box">
                         <div class="layer-title">資源 (Resources)</div>
                         <div class="layer-content">${strategy.historical_context.resources.join('<br>')}</div>
+                        <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
                     </div>
                     <div class="layer-box">
                         <div class="layer-title">事業モデル (Business Model)</div>
                         <div class="layer-content">${strategy.historical_context.business_model}</div>
+                        <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
                     </div>
                     <div class="layer-box">
                         <div class="layer-title">価値 (Value Proposition)</div>
                         <div class="layer-content">${strategy.historical_context.value}</div>
+                        <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
                     </div>
                 </div>
             </div>
@@ -308,14 +332,17 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
                     <div class="layer-box">
                         <div class="layer-title">資源 (Resources)</div>
                         <div class="layer-content">${strategy.future_ideal.resources.join('<br>')}</div>
+                        <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
                     </div>
                     <div class="layer-box">
                         <div class="layer-title">事業モデル (Business Model)</div>
                         <div class="layer-content">${strategy.future_ideal.business_model}</div>
+                        <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
                     </div>
                     <div class="layer-box">
                         <div class="layer-title">価値 (Value Proposition)</div>
                         <div class="layer-content">${strategy.future_ideal.value}</div>
+                        <div style="margin-top: 13pt; border-bottom: 1px dotted #eee; height: 13pt;"></div>
                     </div>
                 </div>
             </div>
@@ -324,7 +351,13 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
             <div class="transition-area">
                 <div class="transition-label">移行期の課題・アクション</div>
                 <div class="challenges-grid">
-                    ${strategy.strategic_challenges.map(c => `<div class="challenge-item">${c}</div>`).join('')}
+                    ${strategy.strategic_challenges.map(c => `
+                        <div class="challenge-item">
+                            <div>${c}</div>
+                            <div style="margin-top: auto; border-bottom: 1px dotted #001f3f; height: 13pt;"></div>
+                            <div style="border-bottom: 1px dotted #001f3f; height: 13pt;"></div>
+                        </div>
+                    `).join('')}
                 </div>
             </div>
         </div>
@@ -361,11 +394,11 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
                 <div class="stat-label" style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">システム健康度 (直近7日間)</div>
                 <div style="display: flex; justify-content: space-around;">
                     <div style="text-align: center;">
-                        <div style="font-size: 9px; color: #ef4444; font-weight: bold;">CRITICAL</div>
+                        <div style="font-size: 9pt; color: #ef4444; font-weight: bold;">CRITICAL</div>
                         <div style="font-size: 20px; font-weight: bold;">${stats.monitoring.criticalCount}</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 9px; color: #f59e0b; font-weight: bold;">WARNING</div>
+                        <div style="font-size: 9pt; color: #f59e0b; font-weight: bold;">WARNING</div>
                         <div style="font-size: 20px; font-weight: bold;">${stats.monitoring.warningCount}</div>
                     </div>
                 </div>
@@ -384,6 +417,14 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
             <ul class="agenda-list">
                 ${strategy.consultation_items.map(item => `<li class="agenda-item">${item}</li>`).join('')}
             </ul>
+            <div class="agenda-memo">
+                <strong>■ 追記・メモ：</strong>
+                <div style="margin-top: 13pt; border-bottom: 1px solid #eee; height: 13pt;"></div>
+                <div style="margin-top: 13pt; border-bottom: 1px solid #eee; height: 13pt;"></div>
+                <div style="margin-top: 13pt; border-bottom: 1px solid #eee; height: 13pt;"></div>
+                <div style="margin-top: 13pt; border-bottom: 1px solid #eee; height: 13pt;"></div>
+                <div style="margin-top: 13pt; border-bottom: 1px solid #eee; height: 13pt;"></div>
+            </div>
         </div>
 
         <div class="footer">© ${new Date().getFullYear()} 技術本 2.0 延命計画 - 経営デザインシート補足資料</div>
