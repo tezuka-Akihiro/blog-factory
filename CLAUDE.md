@@ -26,11 +26,10 @@ TypeScriptのビルドは `ts-node` で直接実行するため、`npm run build
 
 ```text
 src/
-├── commands/task/   # CLIコマンドのエントリーポイント（inspect.ts, summary.ts）
+├── commands/        # CLIコマンドの実装とルーティング（index.ts がエントリーポイント）
 ├── tasks/           # ビジネスロジック（scan, extract, report, summary）
 ├── types/index.ts   # 共有型定義（BlogPost, SummaryData, InspectionResult）
 ├── utils/           # ユーティリティ（logger, spec-loader）
-└── index.ts         # Commander による CLI ルーティング
 ```
 
 - `tasks/` はCLIに依存しない純粋な関数群です。テストを書く場合はここを対象にしてください。
@@ -72,8 +71,8 @@ interface BlogPost {
 
 ### 新しいコマンドを追加する場合
 
-1. `src/commands/task/` に新しいコマンドファイルを作成
-2. `src/index.ts` に Commander コマンドとして登録
+1. `src/commands/` に新しいコマンドファイルを作成
+2. `src/commands/index.ts` に Commander コマンドとして登録
 3. ロジックは `src/tasks/` に実装し、コマンドファイルからは呼び出すだけにする
 
 ### blog-spec.yaml を変更する場合

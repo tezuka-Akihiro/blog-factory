@@ -1,11 +1,11 @@
 import { Command } from 'commander';
-import { scanFiles } from '../../tasks/scan';
-import { extractPost } from '../../tasks/extract';
-import { convertToCSV } from '../../tasks/export';
-import { saveExportFile } from '../../tasks/report';
-import { Logger } from '../../utils/logger';
+import { scanFiles } from '../tasks/scan';
+import { extractPost } from '../tasks/extract';
+import { convertToCSV } from '../tasks/export';
+import { saveExportFile } from '../tasks/report';
+import { Logger } from '../utils/logger';
 import path from 'path';
-import { loadBlogSpec } from '../../utils/spec-loader';
+import { loadBlogSpec } from '../utils/spec-loader';
 
 export const exportCommand = new Command('export')
   .description('Export article metadata to CSV for spreadsheet management')

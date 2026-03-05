@@ -1,11 +1,11 @@
 import { Command } from 'commander';
-import { scanFiles } from '../../tasks/scan';
-import { extractPost } from '../../tasks/extract';
-import { calculateStats } from '../../tasks/stats';
-import { deliverStats } from '../../tasks/delivery';
-import { Logger } from '../../utils/logger';
+import { scanFiles } from '../tasks/scan';
+import { extractPost } from '../tasks/extract';
+import { calculateStats } from '../tasks/stats';
+import { deliverStats } from '../tasks/delivery';
+import { Logger } from '../utils/logger';
 import path from 'path';
-import { loadBlogSpec } from '../../utils/spec-loader';
+import { loadBlogSpec } from '../utils/spec-loader';
 
 export const deliveryCommand = new Command('delivery')
   .description('Calculate blog statistics and update subscription spec')
