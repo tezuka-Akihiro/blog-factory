@@ -1,7 +1,7 @@
 ---
 name: x-trend-writer
-description: Writes "XトレンドをAIに聞いてみた" series articles for ClaudeMix インフォメーションカテゴリ (free, no login). Use when user provides an X (Twitter) trend topic with source URL and asks to write a blog article analyzing how it affects vibe coders, engineers, or individual tech workers. Produces a 4-section article plus X announcement post. Requires trend content and source URL as $ARGUMENTS.
-argument-hint: "[トレンドの概要と出典URL]"
+description: Writes "XトレンドをAIに聞いてみた" series articles for ClaudeMix インフォメーションカテゴリ (free, no login). Use when user provides an X (Twitter) trend topic and asks to write a blog article analyzing how it affects vibe coders, engineers, or individual tech workers. Input can be a raw X post (the post text itself), a topic summary with source URL, or both. Produces a 4-section article plus X announcement post.
+argument-hint: "[Xのポスト本文 or トレンドの概要（出典URLがあれば追加）]"
 allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion
 ---
 
@@ -74,7 +74,7 @@ $ARGUMENTS を以下の3指標で評価する：
 1. frontmatter生成（カテゴリ・タグ・slug・title・description）
 2. 導入部執筆（3文構成）
 3. 4セクション本文執筆
-4. ファイルを `content/blog/posts/[slug].md` に出力
+4. ファイルを `contents/[slug].md` に出力
 
 ### Phase 4: X告知文生成
 
@@ -88,7 +88,7 @@ $ARGUMENTS を以下の3指標で評価する：
 | :--- | :--- |
 | Phase 1 | 入力OK / 補足要求の判断 |
 | Phase 2 | 4セクション分の構造化分析メモ |
-| Phase 3 | 完成記事ファイル（`content/blog/posts/[slug].md`） |
+| Phase 3 | 完成記事ファイル（`contents/[slug].md`） |
 | Phase 4 | X告知ポスト文（コピペ可能） |
 
 ## 参照ドキュメント

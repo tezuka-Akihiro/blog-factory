@@ -69,4 +69,4 @@
 
 1. すべての項目にチェックが入るまで修正する
 2. 不明点は `docs/article-structure.md` と `docs/format-rules.md` を参照する
-3. すべてOKになったらファイルを `content/blog/posts/[slug].md` に出力する
+3. すべてOKになったらファイルを `results/[slug].md` に出力する
