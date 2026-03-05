@@ -1,0 +1,13 @@
+# posts-spec.yaml - 記事メタデータ仕様書
+# このファイルはスキルの参照用スケルトンです。適宜内容を補完してください。
+
+categories:
+  - name: "ClaudeMix ガイド"
+  - name: "ClaudeMix 記録"
+  - name: "ClaudeMix 考察"
+
+tags:
+  - name: "TypeScript"
+  - name: "Remix"
+  - name: "Cloudflare"
+  - name: "Claude Code"

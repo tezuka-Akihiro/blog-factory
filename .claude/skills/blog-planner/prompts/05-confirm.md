@@ -99,7 +99,7 @@ Step 4: オペレーターに確認を求める
 
 **タグ提案**:
 
-- 記事に関連する技術・手法を2〜3個選択（必ず `app/specs/blog/posts-spec.yaml` の既存タグから選択）
+- 記事に関連する技術・手法を2〜3個選択（必ず `docs/posts-spec.yaml` の既存タグから選択）
 - 例: remix, cloudflare-workers, claude-code
 
 ### 3. 決めかねる部分を選択肢化
@@ -336,7 +336,7 @@ Step 4: オペレーターに確認を求める
 
 ### タグ選択
 
-記事に関連する技術・手法を2〜3個選択（必ず `app/specs/blog/posts-spec.yaml` の既存タグから選択）：
+記事に関連する技術・手法を2〜3個選択（必ず `docs/posts-spec.yaml` の既存タグから選択）：
 
 **技術スタック**:
 

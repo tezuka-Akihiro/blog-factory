@@ -65,7 +65,7 @@
 
 ### 3. プロダクト設計書：Remix × Cloudflare Edge Blog
 
-**ファイルパス**: `develop/blog/プロダクト設計書：Remix × Cloudflare Edge Blog.md`
+**ファイルパス**: `docs/develop/blog/プロダクト設計書：Remix × Cloudflare Edge Blog.md`
 
 **役割**: ClaudeMixブログのコンセプト、目的、ターゲット、技術スタックを定義
 
@@ -99,7 +99,7 @@
 
 ### 4. コンテキスト
 
-**ファイルパス**: `develop/blog/context.md`
+**ファイルパス**: `docs/develop/blog/context.md`
 
 **役割**: セルフプロモーションの再定義、コンテキストの重要性、ストーリーテリング手法を定義
 

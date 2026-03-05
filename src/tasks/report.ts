@@ -6,7 +6,7 @@ import { Logger } from '../utils/logger';
 import { Strategy } from '../types/strategy';
 
 export async function loadStrategy(): Promise<Strategy> {
-  const strategyPath = join(process.cwd(), 'strategy.yaml');
+  const strategyPath = join(process.cwd(), 'docs', 'strategy.yaml');
   try {
     const content = await readFile(strategyPath, 'utf-8');
     const parsed = matter('---\n' + content + '\n---');

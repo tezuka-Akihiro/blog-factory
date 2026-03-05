@@ -5,7 +5,7 @@ import { Logger } from './logger';
 import { BlogSpec } from '../types';
 
 export async function loadBlogSpec(): Promise<BlogSpec> {
-  const specPath = path.join(process.cwd(), 'blog-spec.yaml');
+  const specPath = path.join(process.cwd(), 'docs', 'blog-spec.yaml');
   try {
     const content = await fs.readFile(specPath, 'utf-8');
     const parsed = matter('---\n' + content + '\n---');
