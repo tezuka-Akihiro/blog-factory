@@ -68,7 +68,6 @@ export interface ReportData {
   stats: {
     totalArticles: number;
     last30DaysUpdates: number;
-    jsonLdCoverage: number;
     lighthouseScore: number;
     monitoring: {
       criticalCount: number;
