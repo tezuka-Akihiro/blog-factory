@@ -134,11 +134,11 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
         /* Page 1 Specifics (Management Design Sheet) */
         .design-sheet-grid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin-top: 20px; }
         .circle-box {
-            border: 1px solid #001f3f; border-radius: 50%; width: 100mm; height: 100mm;
+            border: 1px solid #aaa; border-radius: 50%; width: 120mm; height: 120mm;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 20px; background: #fff; position: relative;
         }
-        .layer-box { width: 85%; border-bottom: 1px solid #eee; margin-bottom: 8px; padding-bottom: 4px; }
+        .layer-box { width: 100%; border-bottom: 1px solid #eee; margin-bottom: 8px; padding-bottom: 4px; }
         .layer-title { font-weight: bold; font-size: 11pt; color: #001f3f; border-left: 3px solid #001f3f; padding-left: 5px; margin-bottom: 2px; }
         .arrow { font-size: 30pt; color: #001f3f; }
 
@@ -250,10 +250,10 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
                         </div>
                         <div class="metric-card">
                             <div class="metric-label">有料会員数 / 目標</div>
-                            <div class="metric-value value-lg">${stats.business.paidMembers} / 200〜333</div>
+                            <div class="metric-value value-lg">${stats.business.paidMembers} / 100</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-label">無料会員数（将来の転換候補）</div>
+                            <div class="metric-label">無料会員数</div>
                             <div class="metric-value value-lg">${stats.business.freeMembers}</div>
                         </div>
                     </div>
@@ -310,7 +310,7 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
 
             <!-- Bottom: CONSULTATION & MEMO -->
             <div class="section-box">
-                <div class="section-title">CONSULTATION & MEMO（対話エリア）</div>
+                <div class="section-title">CONSULTATION & MEMO</div>
                 <div class="grid-container two-cols" style="margin-top: 10px; height: 100%;">
                     <div>
                         <div style="font-weight: bold; font-size: 11pt; color: #001f3f; margin-bottom: 5px;">■ 本日の相談事項</div>

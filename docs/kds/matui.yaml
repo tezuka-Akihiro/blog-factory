@@ -35,7 +35,7 @@ external_environment:
 
 consultation_items:
   - "この知識アーカイブの価値を、技術者以外にも伝える方法"
-  - "コンシェルジュ相談をするうえで用意すべき資料"
+  - "既存記事{{ARTICLE_COUNT}}本を資産として整理する優先順位"
 
 performance_manual:
   update_frequency: "週1〜2記事"
