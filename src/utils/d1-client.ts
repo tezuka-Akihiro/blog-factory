@@ -18,16 +18,17 @@ function getClaudemixPath(): string {
 async function executeQuery(query: string): Promise<any[]> {
   try {
     const claudemixPath = getClaudemixPath();
-    const command = `npx wrangler d1 execute DB --local --json --command "${query}"`;
-    const { stdout } = await execAsync(command, { cwd: claudemixPath });
+    const command = `npx wrangler d1 execute claudemix-prod --remote --json --command "${query}"`;
+    const { stdout, stderr } = await execAsync(command, { cwd: claudemixPath });
+    if (stderr) Logger.warn(`wrangler stderr: ${stderr}`);
     const result = JSON.parse(stdout);
 
     if (Array.isArray(result) && result[0]?.results) {
       return result[0].results;
     }
     return [];
-  } catch (error) {
-    Logger.warn(`Failed to execute D1 query: ${query}. Falling back to empty array.`);
+  } catch (error: any) {
+    Logger.warn(`Failed to execute D1 query: ${query}. Error: ${error?.message}\nstderr: ${error?.stderr}\nstdout: ${error?.stdout}`);
     return [];
   }
 }

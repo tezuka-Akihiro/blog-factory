@@ -244,10 +244,6 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
                 <div class="section-box">
                     <div class="section-title">BUSINESS GROWTH（ビジネス進捗）</div>
                     <div class="grid-container two-cols" style="margin-top: 10px;">
-                        <div class="metric-card" style="grid-column: span 2;">
-                            <div class="metric-label">サブスクリプション契約数</div>
-                            <div class="metric-value value-xl">${stats.business.activeSubscriptions}</div>
-                        </div>
                         <div class="metric-card">
                             <div class="metric-label">有料会員数 / 目標</div>
                             <div class="metric-value value-lg">${stats.business.paidMembers} / 100</div>

@@ -125,11 +125,11 @@ async function fetchZoneMetrics(
  * 無料プランの制限により最大24時間まで。
  */
 export async function fetchCloudflareAnalytics(hours: number = 24): Promise<CloudflareTrafficData> {
-  const apiToken = process.env.CLOUDFLARE_API_TOKEN;
+  const apiToken = process.env.CF_ANALYTICS_TOKEN;
   const zoneId = process.env.CLOUDFLARE_ZONE_ID;
 
   if (!apiToken || !zoneId) {
-    Logger.warn('CLOUDFLARE_API_TOKEN or CLOUDFLARE_ZONE_ID is not set. Using fallback values.');
+    Logger.warn('CF_ANALYTICS_TOKEN or CLOUDFLARE_ZONE_ID is not set. Using fallback values.');
     return FALLBACK;
   }
 
