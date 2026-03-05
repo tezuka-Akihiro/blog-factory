@@ -37,27 +37,35 @@ export const reportCommand = new Command('report')
       thirtyDaysAgo.setDate(now.getDate() - 30);
 
       let last30DaysUpdates = 0;
-      let jsonLdCount = 0;
 
       for (const article of articles) {
         const updateDate = article.lastModified ? new Date(article.lastModified) : new Date(article.publishedAt || 0);
         if (updateDate >= thirtyDaysAgo) {
           last30DaysUpdates++;
         }
-        if (article.jsonLd) {
-          jsonLdCount++;
-        }
       }
 
-      const jsonLdCoverage = articles.length > 0 ? Math.round((jsonLdCount / articles.length) * 100) : 0;
       const errorRate = (criticalCount + warningCount === 0) ? "0.0%" : "Dynamic"; // As per instructions to emphasize 0.0%
+
+      // Exclude test data (2 users)
+      let remainingToSubtract = 2;
+      let adjustedPaidMembers = businessMetrics.paidMembers;
+      let adjustedFreeMembers = businessMetrics.freeMembers;
+
+      const subtractFromPaid = Math.min(adjustedPaidMembers, remainingToSubtract);
+      adjustedPaidMembers -= subtractFromPaid;
+      remainingToSubtract -= subtractFromPaid;
+
+      const subtractFromFree = Math.min(adjustedFreeMembers, remainingToSubtract);
+      adjustedFreeMembers -= subtractFromFree;
+
+      const adjustedActiveSubscriptions = Math.max(0, businessMetrics.activeSubscriptions - 2);
 
       const reportData: ReportData = {
         strategy,
         stats: {
           totalArticles: articles.length,
           last30DaysUpdates,
-          jsonLdCoverage,
           lighthouseScore: 100,
           monitoring: {
             criticalCount,
@@ -65,9 +73,9 @@ export const reportCommand = new Command('report')
             errorRate,
           },
           business: {
-            paidMembers: businessMetrics.paidMembers,
-            freeMembers: businessMetrics.freeMembers,
-            activeSubscriptions: businessMetrics.activeSubscriptions,
+            paidMembers: adjustedPaidMembers,
+            freeMembers: adjustedFreeMembers, // If these 2 are counted as free when inactive
+            activeSubscriptions: adjustedActiveSubscriptions,
           },
           traffic: {
             pv: 0,

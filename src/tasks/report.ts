@@ -220,25 +220,6 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
         <h1>経営診断書 (Management Diagnosis)</h1>
 
         <div class="grid-container diagnosis-grid">
-            <!-- Top: QUALITY & TRUST -->
-            <div class="section-box">
-                <div class="section-title">QUALITY & TRUST（技術的誠実さ）</div>
-                <div class="grid-container three-cols" style="margin-top: 10px;">
-                    <div class="metric-card">
-                        <div class="metric-label">エラー発生率</div>
-                        <div class="metric-value value-lg" style="color: #ef4444;">${stats.monitoring.errorRate}</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Lighthouse Score</div>
-                        <div class="metric-value value-lg">100/100</div>
-                    </div>
-                    <div class="metric-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                        <div class="badge">CERTIFIED FOUNDATION</div>
-                        <div style="font-size: 10pt; color: #666; margin-top: 4px;">（認証済み基盤）</div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Middle: BUSINESS & ASSETS -->
             <div class="grid-container two-cols">
                 <div class="section-box">
@@ -260,16 +241,12 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
                 </div>
                 <div class="section-box">
                     <div class="section-title">INTELLECTUAL ASSETS（資産の状態）</div>
-                    <div class="grid-container two-cols" style="margin-top: 10px;">
+                    <div class="grid-container" style="margin-top: 10px;">
                         <div class="metric-card">
                             <div class="metric-label">総記事数</div>
                             <div class="metric-value value-lg">${stats.totalArticles} posts</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-label">JSON-LD 網羅率</div>
-                            <div class="metric-value value-lg">${stats.jsonLdCoverage}%</div>
-                        </div>
-                        <div class="metric-card" style="grid-column: span 2;">
                             <div class="metric-label">30日以内の更新数</div>
                             <div class="metric-value value-lg">${stats.last30DaysUpdates} updates</div>
                         </div>
