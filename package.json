@@ -11,7 +11,8 @@
     "delivery": "ts-node src/commands/index.ts delivery",
     "export": "ts-node src/commands/index.ts export",
     "update-metadata": "ts-node src/commands/index.ts update-metadata",
-    "report": "ts-node src/commands/index.ts report"
+    "report": "ts-node src/commands/index.ts report",
+    "kpi-collect": "ts-node src/commands/index.ts kpi-collect"
   },
   "repository": {
     "type": "git",

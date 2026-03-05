@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import { Logger } from '../utils/logger';
 import { loadStrategy, generateHtmlReport, saveExportFile, loadBlogSnapshot } from '../tasks/report';
 import { fetchD1MonitoringReports, fetchBusinessMetrics } from '../utils/d1-client';
-import { fetchCloudflareAnalytics } from '../utils/cloudflare-client';
+import { loadKpiHistory, summarizeKpiHistory } from '../tasks/kpi';
 import { ReportData } from '../types';
 
 export const reportCommand = new Command('report')
@@ -15,15 +15,17 @@ export const reportCommand = new Command('report')
       const snapshot = await loadBlogSnapshot();
       const strategy = await loadStrategy();
 
-      // 2. Fetch D1 data and Cloudflare Analytics
+      // 2. Fetch D1 data & accumulated KPI history
       const monitoringLogs = await fetchD1MonitoringReports(7);
       const businessMetrics = await fetchBusinessMetrics();
-      const cfTraffic = await fetchCloudflareAnalytics(24); // 直近24時間（無料プラン上限）
+      const kpiHistory = await loadKpiHistory();
+      const kpiSummary = summarizeKpiHistory(kpiHistory, 30);
 
       const criticalCount = monitoringLogs.filter(log => log.severity === 'CRITICAL').length;
       const warningCount = monitoringLogs.filter(log => log.severity === 'WARNING').length;
 
-      const errorRate = cfTraffic.errorRate;
+      // エラー率は kpi-collect 実行時のスナップショットには未対応のため '-' とする
+      const errorRate = '-';
 
       // Exclude test data (2 users)
       let remainingToSubtract = 2;
@@ -52,20 +54,20 @@ export const reportCommand = new Command('report')
           },
           business: {
             paidMembers: adjustedPaidMembers,
-            freeMembers: adjustedFreeMembers, // If these 2 are counted as free when inactive
+            freeMembers: adjustedFreeMembers,
             activeSubscriptions: adjustedActiveSubscriptions,
           },
           traffic: {
-            pv: cfTraffic.pv,
-            uu: cfTraffic.uu,
+            pv: kpiSummary.pv,
+            uu: kpiSummary.uu,
             avgStayTime: '-',
-            topSources: cfTraffic.topSources,
-            topPages: cfTraffic.topPages,
+            topSources: [],
+            topPages: [],
           },
         },
       };
 
-      // 4. Generate HTML
+      // 3. Generate HTML
       const html = await generateHtmlReport(reportData);
       const filePath = await saveExportFile(html, 'report.html');
 
