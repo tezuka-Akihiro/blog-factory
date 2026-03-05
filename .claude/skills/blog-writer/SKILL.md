@@ -91,7 +91,7 @@ Phase 3: 本文作成 → prompts/03-main-content.md
 
 - **段階的な執筆**: 各フェーズを順序通りに完了させてください
 - **品質基準の厳守**: 導入部の段落構成、文字数制限を必ず守ってください
-- **posts-spec.yaml参照**: タグ・カテゴリは必ず `develop/blog/posts/posts-spec.yaml` を確認
+- **posts-spec.yaml参照**: タグ・カテゴリは必ず `docs/posts-spec.yaml` を確認
 - **テンプレート選択**: 記事の種類に応じて適切なテンプレートを選択
 
 ---

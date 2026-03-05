@@ -39,7 +39,7 @@ src/
 
 | ファイル | 役割 |
 | --- | --- |
-| `blog-spec.yaml` | カテゴリ・タグ・有料/無料判定のマスター定義 |
+| `docs/blog-spec.yaml` | カテゴリ・タグ・有料/無料判定のマスター定義 |
 | `.env` | `BLOG_SOURCE_PATH` の設定（gitignore済み） |
 | `.env.example` | 環境変数のテンプレート |
 | `results/` | 生成されたレポートの出力先（gitignore 済み） |
@@ -77,7 +77,7 @@ interface BlogPost {
 
 ### blog-spec.yaml を変更する場合
 
-`src/utils/spec-loader.ts` の `loadBlogSpec()` がこのファイルを読み込みます。スキーマを変更する場合は型定義の更新も必要です。
+`src/utils/spec-loader.ts` の `loadBlogSpec()` が `docs/blog-spec.yaml` を読み込みます。スキーマを変更する場合は型定義の更新も必要です。
 
 ### 新しいフロントマターフィールドを追加する場合
 
