@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import { scanFiles } from '../tasks/scan';
 import { extractPost } from '../tasks/extract';
 import { calculateSummary, formatSummaryToMarkdown } from '../tasks/summary';
-import { saveMarkdownReport } from '../tasks/report';
+import { saveMarkdownReport, saveBlogSnapshot } from '../tasks/report';
 import { Logger } from '../utils/logger';
 import path from 'path';
 import { loadBlogSpec, getTagToGroupMap } from '../utils/spec-loader';
@@ -30,6 +30,12 @@ export const summaryCommand = new Command('summary')
       const markdown = formatSummaryToMarkdown(summaryData);
 
       await saveMarkdownReport(markdown, 'summary.md');
+
+      await saveBlogSnapshot({
+        generatedAt: new Date().toISOString(),
+        totalArticles: summaryData.totalPosts,
+        last30DaysPublishedCount: summaryData.last30DaysPublishedCount,
+      });
 
       Logger.success('Summary generation completed successfully');
       Logger.info(`Total Articles: ${summaryData.totalPosts}`);

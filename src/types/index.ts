@@ -64,6 +64,12 @@ export interface D1MonitoringReport {
   created_at: string;
 }
 
+export interface BlogSnapshot {
+  generatedAt: string;       // ISO 8601
+  totalArticles: number;
+  last30DaysPublishedCount: number;
+}
+
 export interface ReportData {
   strategy: import('./strategy').Strategy;
   stats: {
@@ -84,6 +90,8 @@ export interface ReportData {
       pv: number | string;
       uu: number | string;
       avgStayTime: number | string;
+      topSources: Array<{ host: string; visits: number }>;
+      topPages: Array<{ path: string; requests: number }>;
     };
   };
 }
