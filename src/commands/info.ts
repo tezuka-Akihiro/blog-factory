@@ -1,11 +1,11 @@
 import { Command } from 'commander';
-import { scanFiles } from '../../tasks/scan';
-import { extractPost } from '../../tasks/extract';
-import { formatInfoList } from '../../tasks/info';
-import { saveMarkdownReport } from '../../tasks/report';
-import { Logger } from '../../utils/logger';
+import { scanFiles } from '../tasks/scan';
+import { extractPost } from '../tasks/extract';
+import { formatInfoList } from '../tasks/info';
+import { saveMarkdownReport } from '../tasks/report';
+import { Logger } from '../utils/logger';
 import path from 'path';
-import { loadBlogSpec } from '../../utils/spec-loader';
+import { loadBlogSpec } from '../utils/spec-loader';
 
 export const infoCommand = new Command('info')
   .description('Extract titles and summaries for Information category articles')

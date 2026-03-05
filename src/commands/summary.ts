@@ -1,11 +1,11 @@
 import { Command } from 'commander';
-import { scanFiles } from '../../tasks/scan';
-import { extractPost } from '../../tasks/extract';
-import { calculateSummary, formatSummaryToMarkdown } from '../../tasks/summary';
-import { saveMarkdownReport } from '../../tasks/report';
-import { Logger } from '../../utils/logger';
+import { scanFiles } from '../tasks/scan';
+import { extractPost } from '../tasks/extract';
+import { calculateSummary, formatSummaryToMarkdown } from '../tasks/summary';
+import { saveMarkdownReport } from '../tasks/report';
+import { Logger } from '../utils/logger';
 import path from 'path';
-import { loadBlogSpec, getTagToGroupMap } from '../../utils/spec-loader';
+import { loadBlogSpec, getTagToGroupMap } from '../utils/spec-loader';
 
 export const summaryCommand = new Command('summary')
   .description('Generate a summary report of blog articles')

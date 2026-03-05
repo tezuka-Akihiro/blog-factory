@@ -1,13 +1,13 @@
 import { Command } from 'commander';
 import * as dotenv from 'dotenv';
-import { Logger } from './utils/logger';
-import { inspectCommand } from './commands/task/inspect';
-import { summaryCommand } from './commands/task/summary';
-import { infoCommand } from './commands/task/info';
-import { deliveryCommand } from './commands/task/delivery';
-import { exportCommand } from './commands/task/export';
-import { updateMetadataCommand } from './commands/task/update-metadata';
-import { reportCommand } from './commands/task/report';
+import { Logger } from '../utils/logger';
+import { inspectCommand } from './inspect';
+import { summaryCommand } from './summary';
+import { infoCommand } from './info';
+import { deliveryCommand } from './delivery';
+import { exportCommand } from './export';
+import { updateMetadataCommand } from './update-metadata';
+import { reportCommand } from './report';
 
 dotenv.config();
 

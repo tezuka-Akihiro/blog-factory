@@ -1,11 +1,11 @@
 import { Command } from 'commander';
-import { scanFiles } from '../../tasks/scan';
-import { extractPost } from '../../tasks/extract';
-import { saveReport } from '../../tasks/report';
-import { Logger } from '../../utils/logger';
-import { InspectionResult } from '../../types';
+import { scanFiles } from '../tasks/scan';
+import { extractPost } from '../tasks/extract';
+import { saveReport } from '../tasks/report';
+import { Logger } from '../utils/logger';
+import { InspectionResult } from '../types';
 import path from 'path';
-import { loadBlogSpec } from '../../utils/spec-loader';
+import { loadBlogSpec } from '../utils/spec-loader';
 
 export const inspectCommand = new Command('inspect')
   .description('Scan articles and extract metadata')

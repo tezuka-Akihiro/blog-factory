@@ -1,6 +1,6 @@
 import { Command } from 'commander';
-import { updateMetadataFromCsv } from '../../tasks/update-metadata';
-import { Logger } from '../../utils/logger';
+import { updateMetadataFromCsv } from '../tasks/update-metadata';
+import { Logger } from '../utils/logger';
 import path from 'path';
 
 export const updateMetadataCommand = new Command('update-metadata')

@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "inspect": "ts-node src/index.ts inspect",
-    "summary": "ts-node src/index.ts summary",
-    "info": "ts-node src/index.ts info",
-    "delivery": "ts-node src/index.ts delivery",
-    "export": "ts-node src/index.ts export",
-    "update-metadata": "ts-node src/index.ts update-metadata",
-    "report": "ts-node src/index.ts report"
+    "inspect": "ts-node src/commands/index.ts inspect",
+    "summary": "ts-node src/commands/index.ts summary",
+    "info": "ts-node src/commands/index.ts info",
+    "delivery": "ts-node src/commands/index.ts delivery",
+    "export": "ts-node src/commands/index.ts export",
+    "update-metadata": "ts-node src/commands/index.ts update-metadata",
+    "report": "ts-node src/commands/index.ts report"
   },
   "repository": {
     "type": "git",
