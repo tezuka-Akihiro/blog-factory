@@ -1,9 +1,28 @@
 import { writeFile, mkdir, readFile } from 'fs/promises';
 import { join } from 'path';
 import matter from 'gray-matter';
-import { InspectionResult, ReportData } from '../types';
+import { BlogSnapshot, InspectionResult, ReportData } from '../types';
 import { Logger } from '../utils/logger';
 import { Strategy } from '../types/strategy';
+
+const SNAPSHOT_PATH = join(process.cwd(), 'data', 'blog-snapshot.json');
+
+export async function saveBlogSnapshot(snapshot: BlogSnapshot): Promise<void> {
+  await mkdir(join(process.cwd(), 'data'), { recursive: true });
+  await writeFile(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2), 'utf-8');
+  Logger.success(`Blog snapshot saved to ${SNAPSHOT_PATH}`);
+}
+
+export async function loadBlogSnapshot(): Promise<BlogSnapshot> {
+  try {
+    const content = await readFile(SNAPSHOT_PATH, 'utf-8');
+    return JSON.parse(content) as BlogSnapshot;
+  } catch {
+    throw new Error(
+      'data/blog-snapshot.json が見つかりません。先に `npm run summary` を実行してスナップショットを生成してください。',
+    );
+  }
+}
 
 export async function loadStrategy(): Promise<Strategy> {
   const strategyPath = join(process.cwd(), 'docs', 'strategy.yaml');
@@ -250,6 +269,41 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
                             <div class="metric-label">30日以内の更新数</div>
                             <div class="metric-value value-lg">${stats.last30DaysUpdates} updates</div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Traffic -->
+            <div class="grid-container two-cols">
+                <div class="section-box">
+                    <div class="section-title">TRAFFIC（直近24時間）</div>
+                    <div class="grid-container three-cols" style="margin-top: 10px;">
+                        <div class="metric-card">
+                            <div class="metric-label">UU（訪問者数）</div>
+                            <div class="metric-value value-lg">${stats.traffic.uu}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">PV（ページ表示数）</div>
+                            <div class="metric-value value-lg">${stats.traffic.pv}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">エラー率</div>
+                            <div class="metric-value value-lg">${stats.monitoring.errorRate}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-box">
+                    <div class="section-title">人気記事 TOP 5（直近24時間）</div>
+                    <div style="margin-top: 10px; font-size: 10pt;">
+                        ${stats.traffic.topPages.length > 0
+                          ? stats.traffic.topPages.map((p, i) => `
+                            <div style="padding: 3px 0; border-bottom: 1px solid #eee; display: flex; gap: 8px;">
+                                <span style="color: #001f3f; font-weight: bold; min-width: 18px;">${i + 1}.</span>
+                                <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.path}</span>
+                                <span style="color: #666;">${p.requests} req</span>
+                            </div>`).join('')
+                          : '<div style="color: #999; padding: 8px 0;">データなし</div>'
+                        }
                     </div>
                 </div>
             </div>
