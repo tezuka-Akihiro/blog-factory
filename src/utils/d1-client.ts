@@ -1,14 +1,25 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import * as path from 'path';
 import { Logger } from './logger';
 import { D1MonitoringReport } from '../types';
 
 const execAsync = promisify(exec);
 
+function getClaudemixPath(): string {
+  const blogSourcePath = process.env.BLOG_SOURCE_PATH;
+  if (!blogSourcePath) {
+    throw new Error('BLOG_SOURCE_PATH is not set');
+  }
+  // BLOG_SOURCE_PATH = ../claudemix/content/blog/posts → ../claudemix
+  return path.resolve(process.cwd(), blogSourcePath, '../../..');
+}
+
 async function executeQuery(query: string): Promise<any[]> {
   try {
+    const claudemixPath = getClaudemixPath();
     const command = `npx wrangler d1 execute DB --local --json --command "${query}"`;
-    const { stdout } = await execAsync(command);
+    const { stdout } = await execAsync(command, { cwd: claudemixPath });
     const result = JSON.parse(stdout);
 
     if (Array.isArray(result) && result[0]?.results) {
