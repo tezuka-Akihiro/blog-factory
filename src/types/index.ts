@@ -22,6 +22,7 @@ export interface SummaryData {
   tagGroupCounts: Record<string, number>;
   paidPostsCount: number;
   totalPaidCharacterCount: number;
+  last30DaysPublishedCount: number;
 }
 
 export interface InspectionResult {
@@ -67,7 +68,7 @@ export interface ReportData {
   strategy: import('./strategy').Strategy;
   stats: {
     totalArticles: number;
-    last30DaysUpdates: number;
+    last30DaysPublished: number;
     lighthouseScore: number;
     monitoring: {
       criticalCount: number;

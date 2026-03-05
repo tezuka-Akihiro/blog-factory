@@ -2,10 +2,11 @@ import { Command } from 'commander';
 import { Logger } from '../utils/logger';
 import { scanFiles } from '../tasks/scan';
 import { extractPost } from '../tasks/extract';
-import { loadBlogSpec } from '../utils/spec-loader';
+import { loadBlogSpec, getTagToGroupMap } from '../utils/spec-loader';
 import { loadStrategy, generateHtmlReport, saveExportFile } from '../tasks/report';
 import { fetchD1MonitoringReports, fetchBusinessMetrics } from '../utils/d1-client';
 import { BlogPost, ReportData } from '../types';
+import { calculateSummary } from '../tasks/summary';
 
 export const reportCommand = new Command('report')
   .description('Generate Management Design Sheet Business Progress Report')
@@ -16,6 +17,7 @@ export const reportCommand = new Command('report')
       const spec = await loadBlogSpec();
       const strategy = await loadStrategy();
       const sourcePath = process.env.BLOG_SOURCE_PATH!;
+      const tagToGroupMap = getTagToGroupMap(spec);
 
       // 1. Scan local Markdown files
       const files = await scanFiles(sourcePath);
@@ -32,18 +34,7 @@ export const reportCommand = new Command('report')
       const warningCount = monitoringLogs.filter(log => log.severity === 'WARNING').length;
 
       // 3. Calculate stats
-      const now = new Date();
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(now.getDate() - 30);
-
-      let last30DaysUpdates = 0;
-
-      for (const article of articles) {
-        const updateDate = article.lastModified ? new Date(article.lastModified) : new Date(article.publishedAt || 0);
-        if (updateDate >= thirtyDaysAgo) {
-          last30DaysUpdates++;
-        }
-      }
+      const summaryData = calculateSummary(articles, tagToGroupMap);
 
       const errorRate = (criticalCount + warningCount === 0) ? "0.0%" : "Dynamic"; // As per instructions to emphasize 0.0%
 
@@ -65,7 +56,7 @@ export const reportCommand = new Command('report')
         strategy,
         stats: {
           totalArticles: articles.length,
-          last30DaysUpdates,
+          last30DaysPublished: summaryData.last30DaysPublishedCount,
           lighthouseScore: 100,
           monitoring: {
             criticalCount,

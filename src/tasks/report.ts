@@ -247,8 +247,8 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
                             <div class="metric-value value-lg">${stats.totalArticles} posts</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-label">30日以内の更新数</div>
-                            <div class="metric-value value-lg">${stats.last30DaysUpdates} updates</div>
+                            <div class="metric-label">30日以内の公開数</div>
+                            <div class="metric-value value-lg">${stats.last30DaysPublished} posts</div>
                         </div>
                     </div>
                 </div>

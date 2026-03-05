@@ -4,15 +4,28 @@ export function calculateSummary(
   articles: BlogPost[],
   tagToGroupMap: Record<string, string>
 ): SummaryData {
+  const now = new Date();
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(now.getDate() - 29);
+  thirtyDaysAgo.setHours(0, 0, 0, 0);
+
   const summary: SummaryData = {
     totalPosts: articles.length,
     categoryCounts: {},
     tagGroupCounts: {},
     paidPostsCount: 0,
     totalPaidCharacterCount: 0,
+    last30DaysPublishedCount: 0,
   };
 
   for (const article of articles) {
+    if (article.publishedAt) {
+      const pubDate = new Date(article.publishedAt);
+      if (pubDate >= thirtyDaysAgo) {
+        summary.last30DaysPublishedCount++;
+      }
+    }
+
     const category = article.category || '未設定';
     summary.categoryCounts[category] = (summary.categoryCounts[category] || 0) + 1;
 
@@ -48,6 +61,7 @@ export function formatSummaryToMarkdown(summary: SummaryData): string {
   md += `| 項目 | 数値 |\n`;
   md += `| :--- | :--- |\n`;
   md += `| 記事総数 | ${summary.totalPosts} 件 |\n`;
+  md += `| 直近30日の公開記事数 | ${summary.last30DaysPublishedCount} 件 |\n`;
   md += `| 有料記事数 | ${summary.paidPostsCount} 件 |\n`;
   md += `| 有料記事の総文字数 | ${summary.totalPaidCharacterCount.toLocaleString()} 文字 |\n\n`;
 
