@@ -3,6 +3,8 @@ import { Logger } from '../utils/logger';
 import { loadStrategy, generateHtmlReport, saveExportFile, loadBlogSnapshot } from '../tasks/report';
 import { fetchD1MonitoringReports, fetchBusinessMetrics } from '../utils/d1-client';
 import { loadKpiHistory, summarizeKpiHistory } from '../tasks/kpi';
+import { fetchSearchConsoleData } from '../utils/search-console-client';
+import { fetchGA4Data } from '../utils/ga4-client';
 import { ReportData } from '../types';
 
 export const reportCommand = new Command('report')
@@ -20,6 +22,12 @@ export const reportCommand = new Command('report')
       const businessMetrics = await fetchBusinessMetrics();
       const kpiHistory = await loadKpiHistory();
       const kpiSummary = summarizeKpiHistory(kpiHistory, 30);
+
+      // 3. Fetch Google API data (Search Console / GA4)
+      const [scData, ga4Data] = await Promise.all([
+        fetchSearchConsoleData(28),
+        fetchGA4Data(28),
+      ]);
 
       const criticalCount = monitoringLogs.filter(log => log.severity === 'CRITICAL').length;
       const warningCount = monitoringLogs.filter(log => log.severity === 'WARNING').length;
@@ -63,6 +71,15 @@ export const reportCommand = new Command('report')
             avgStayTime: '-',
             topSources: [],
             topPages: [],
+          },
+          brand: {
+            namedSearchCount: scData.namedSearchCount,
+            avgEngagementTime: ga4Data.avgEngagementTime,
+            returnRate: ga4Data.returnRate,
+            avgScrollDepth: '-',
+          },
+          conversion: {
+            microCvCount: 0,
           },
         },
       };

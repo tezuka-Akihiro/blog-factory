@@ -269,10 +269,10 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
                 </div>
             </div>
 
-            <!-- Traffic -->
-            <div class="grid-container two-cols">
+            <!-- Traffic + Brand + Top5 -->
+            <div class="grid-container three-cols">
                 <div class="section-box">
-                    <div class="section-title">TRAFFIC（直近24時間）</div>
+                    <div class="section-title">TRAFFIC（直近30日）</div>
                     <div class="grid-container three-cols" style="margin-top: 10px;">
                         <div class="metric-card">
                             <div class="metric-label">UU（訪問者数）</div>
@@ -285,6 +285,27 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
                         <div class="metric-card">
                             <div class="metric-label">エラー率</div>
                             <div class="metric-value value-lg">${stats.monitoring.errorRate}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-box">
+                    <div class="section-title">BRAND TRACTION（直近28日）</div>
+                    <div class="grid-container" style="margin-top: 10px; grid-template-columns: 1fr 1fr;">
+                        <div class="metric-card">
+                            <div class="metric-label">指名検索数</div>
+                            <div class="metric-value value-lg">${stats.brand.namedSearchCount}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">リード転換数</div>
+                            <div class="metric-value value-lg">${stats.conversion.microCvCount}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">平均エンゲージメント時間</div>
+                            <div class="metric-value" style="font-size: 14pt;">${stats.brand.avgEngagementTime}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">再訪率</div>
+                            <div class="metric-value" style="font-size: 14pt;">${stats.brand.returnRate}</div>
                         </div>
                     </div>
                 </div>

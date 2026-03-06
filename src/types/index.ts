@@ -101,5 +101,14 @@ export interface ReportData {
       topSources: Array<{ host: string; visits: number }>;
       topPages: Array<{ path: string; requests: number }>;
     };
+    brand: {
+      namedSearchCount: number;
+      avgEngagementTime: string;
+      returnRate: string;
+      avgScrollDepth: string;
+    };
+    conversion: {
+      microCvCount: number;
+    };
   };
 }
