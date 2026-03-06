@@ -23,11 +23,11 @@ function datetimeString(d: Date): string {
   return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
 }
 
-async function graphql(
+async function graphql<T>(
   apiToken: string,
   query: string,
   variables: Record<string, string>,
-): Promise<{ data?: any; errors?: any[] } | null> {
+): Promise<{ data?: T; errors?: Array<{ message: string }> } | null> {
   try {
     const res = await fetch(GRAPHQL_ENDPOINT, {
       method: 'POST',
@@ -41,11 +41,30 @@ async function graphql(
       Logger.warn(`Cloudflare API HTTP ${res.status}`);
       return null;
     }
-    return res.json() as Promise<{ data?: any; errors?: any[] }>;
+    return res.json() as Promise<{ data?: T; errors?: Array<{ message: string }> }>;
   } catch (e) {
     Logger.warn(`Cloudflare fetch error: ${e instanceof Error ? e.message : String(e)}`);
     return null;
   }
+}
+
+interface CloudflareGraphQLResponse {
+  viewer: {
+    zones: Array<{
+      totals: Array<{
+        count: number;
+        sum: { visits: number };
+      }>;
+      topPages: Array<{
+        count: number;
+        dimensions: { clientRequestPath: string };
+      }>;
+      errorGroups: Array<{
+        count: number;
+        dimensions: { edgeResponseStatus: string };
+      }>;
+    }>;
+  };
 }
 
 /** UU / PV / 人気記事 / エラー率（直近24時間） */
@@ -87,7 +106,7 @@ async function fetchZoneMetrics(
     }
   `;
 
-  const json = await graphql(apiToken, query, { zoneId, since, until });
+  const json = await graphql<CloudflareGraphQLResponse>(apiToken, query, { zoneId, since, until });
   if (!json || json.errors?.length) {
     if (json?.errors?.length) Logger.warn(`Cloudflare zone query errors: ${JSON.stringify(json.errors)}`);
     return FALLBACK;
@@ -96,21 +115,21 @@ async function fetchZoneMetrics(
   const zone = json.data?.viewer?.zones?.[0];
   if (!zone) return FALLBACK;
 
-  const totalsGroup = zone.totals?.[0] ?? {};
-  const uu: number = totalsGroup.sum?.visits ?? 0;
-  const pv: number = totalsGroup.count ?? 0;
+  const totalsGroup = zone.totals?.[0];
+  const uu: number = totalsGroup?.sum?.visits ?? 0;
+  const pv: number = totalsGroup?.count ?? 0;
 
   const topPages: CloudflareTrafficData['topPages'] = (zone.topPages ?? [])
-    .filter((g: any) => {
-      const path: string = g.dimensions?.clientRequestPath ?? '';
+    .filter((g) => {
+      const path = g.dimensions.clientRequestPath;
       // /blog/{slug} のみ。画像・静的ファイル・その他パスを除外
       return /^\/blog\/[^/]+\/?$/.test(path);
     })
-    .map((g: any) => ({ path: g.dimensions.clientRequestPath as string, requests: g.count ?? 0 }))
+    .map((g) => ({ path: g.dimensions.clientRequestPath, requests: g.count }))
     .slice(0, 5);
 
   const errorGroups: Array<{ count: number; status: number }> = (zone.errorGroups ?? []).map(
-    (g: any) => ({ count: g.count ?? 0, status: Number(g.dimensions?.edgeResponseStatus ?? 0) }),
+    (g) => ({ count: g.count, status: Number(g.dimensions.edgeResponseStatus) }),
   );
   const total = errorGroups.reduce((s, g) => s + g.count, 0);
   const errors = errorGroups.filter(g => g.status >= 400).reduce((s, g) => s + g.count, 0);

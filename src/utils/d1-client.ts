@@ -15,7 +15,7 @@ function getClaudemixPath(): string {
   return path.resolve(process.cwd(), blogSourcePath, '../../..');
 }
 
-async function executeQuery(query: string): Promise<any[]> {
+async function executeQuery<T = Record<string, unknown>>(query: string): Promise<T[]> {
   try {
     const claudemixPath = getClaudemixPath();
     const command = `npx wrangler d1 execute claudemix-prod --remote --json --command "${query}"`;
@@ -24,11 +24,14 @@ async function executeQuery(query: string): Promise<any[]> {
     const result = JSON.parse(stdout);
 
     if (Array.isArray(result) && result[0]?.results) {
-      return result[0].results;
+      return result[0].results as T[];
     }
     return [];
-  } catch (error: any) {
-    Logger.warn(`Failed to execute D1 query: ${query}. Error: ${error?.message}\nstderr: ${error?.stderr}\nstdout: ${error?.stdout}`);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const stderr = (error as { stderr?: string })?.stderr || '';
+    const stdout = (error as { stdout?: string })?.stdout || '';
+    Logger.warn(`Failed to execute D1 query: ${query}. Error: ${errorMessage}\nstderr: ${stderr}\nstdout: ${stdout}`);
     return [];
   }
 }
@@ -39,13 +42,14 @@ export async function fetchD1MonitoringReports(days: number = 7): Promise<D1Moni
   const timestampStr = sevenDaysAgo.toISOString().replace('T', ' ').split('.')[0];
 
   const query = `SELECT * FROM monitoring_reports WHERE created_at >= '${timestampStr}'`;
-  return executeQuery(query);
+  return executeQuery<D1MonitoringReport>(query);
 }
 
 export async function fetchBusinessMetrics(): Promise<{ paidMembers: number; freeMembers: number; activeSubscriptions: number }> {
-  const paidMembersResult = await executeQuery("SELECT COUNT(*) as count FROM users WHERE subscription_status = 'active'");
-  const freeMembersResult = await executeQuery("SELECT COUNT(*) as count FROM users WHERE subscription_status = 'inactive'");
-  const activeSubsResult = await executeQuery("SELECT COUNT(*) as count FROM subscriptions WHERE status = 'active'");
+  interface CountResult { count: number }
+  const paidMembersResult = await executeQuery<CountResult>("SELECT COUNT(*) as count FROM users WHERE subscription_status = 'active'");
+  const freeMembersResult = await executeQuery<CountResult>("SELECT COUNT(*) as count FROM users WHERE subscription_status = 'inactive'");
+  const activeSubsResult = await executeQuery<CountResult>("SELECT COUNT(*) as count FROM subscriptions WHERE status = 'active'");
 
   return {
     paidMembers: paidMembersResult[0]?.count || 0,
