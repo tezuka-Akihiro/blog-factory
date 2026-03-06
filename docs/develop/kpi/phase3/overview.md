@@ -2,7 +2,7 @@
 
 ## 前提条件
 
-- [ ] フェーズ1・2の実装が完了している
+- [ ] フェーズ1・2の実装が完了している（`npm run kpi-collect` が継続稼働し、UU/PV データが蓄積されている）
 - [ ] Stripe アカウントでシークレットキーを取得済み
 - [ ] CPA（顧客獲得コスト）の初期値を手動で把握済み
 
@@ -26,6 +26,8 @@ CPA_MANUAL=<顧客獲得コスト（円）>   # 広告費等の手動入力値
 STRIPE_SECRET_KEY=
 CPA_MANUAL=0
 ```
+
+> フェーズ1・2で追加済みの `CLOUDFLARE_ZONE_ID` / `CF_ANALYTICS_TOKEN` / `GOOGLE_SERVICE_ACCOUNT_JSON` / `GA4_PROPERTY_ID` はそのまま残す。
 
 ---
 

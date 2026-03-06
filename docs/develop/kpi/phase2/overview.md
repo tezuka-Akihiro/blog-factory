@@ -2,11 +2,12 @@
 
 ## 前提条件
 
-- [ ] フェーズ1の実装が完了している
+- [ ] フェーズ1の実装が完了している（`npm run kpi-collect` が毎日実行されており、`results/kpi-history.json` にデータが蓄積されている）
 - [ ] Google Cloud プロジェクトでサービスアカウントを作成し、JSON キーを取得済み
 - [ ] Search Console でサービスアカウントのメールアドレスを「閲覧者」として追加済み
 - [ ] GA4 でサービスアカウントに「閲覧者」権限を付与済み
 - [ ] GA4 のプロパティ ID を確認済み
+- [ ] **各 API の無料枠・取得可能期間を事前に確認済み**（フェーズ1の反省点：無料プランでは利用不可の API があった）
 - [ ] cloudemix 側（Astro / Workers）でカスタムイベント計測の実装方針を決定済み
 
 ---
@@ -29,6 +30,8 @@ GA4_PROPERTY_ID=<your-property-id>
 GOOGLE_SERVICE_ACCOUNT_JSON=
 GA4_PROPERTY_ID=
 ```
+
+> フェーズ1で追加済みの `CLOUDFLARE_ZONE_ID` / `CF_ANALYTICS_TOKEN` はそのまま残す。
 
 ---
 

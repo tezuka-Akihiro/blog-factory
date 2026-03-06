@@ -4,19 +4,22 @@
 
 ### 実行方式
 
-blog-factory CLI（`npm run report`）でオンデマンド実行する。Cron Triggers（Workers）による自動配信はフェーズ1の実装目標だが、**指標値の取得・集約・レポート生成はすべて `src/commands/report.ts` に集約する**。
+blog-factory CLI で運用する。
 
 ```sh
-npm run report
+npm run kpi-collect   # 毎日実行：前日の KPI を蓄積
+npm run report        # 任意のタイミングで実行：蓄積データを元にレポート生成
 → results/report.html に出力
 ```
+
+> **設計原則**：外部 API（Cloudflare 等）の無料プランは**取得できる期間が直近に限定**される。そのため、`kpi-collect` で毎日前日データをローカルに蓄積し、`report` はその蓄積データを参照するアーキテクチャを採用する。オンデマンドでの複数日取得には依存しない。
 
 ### データソースの分類
 
 | 区分 | データ | 取得方法 |
 | --- | --- | --- |
 | **自前DB** | 会員数・サブスクリプション状態・モニタリングログ | Cloudflare D1（`wrangler d1 execute --local`） |
-| **外部API（Ph1）** | 訪問者数・流入元 | Cloudflare Analytics API（REST） |
+| **外部API（Ph1）** | 訪問者数（UU）・PV | Cloudflare Zone Analytics GraphQL API |
 | **外部API（Ph2）** | 指名検索数・エンゲージメント時間 | Google Search Console API / GA4 API |
 | **外部API（Ph3）** | MRR・チャーンレート・LTV | Stripe API |
 
@@ -28,21 +31,23 @@ npm run report
 
 ```sh
 # .env に追加していくイメージ
-CLOUDFLARE_ACCOUNT_ID=...
-CLOUDFLARE_API_TOKEN=...         # Ph1 で追加
-GOOGLE_SERVICE_ACCOUNT_JSON=...  # Ph2 で追加
-STRIPE_SECRET_KEY=...            # Ph3 で追加
+CLOUDFLARE_ZONE_ID=...          # Ph1 で追加（Account ID ではなく Zone ID）
+CF_ANALYTICS_TOKEN=...          # Ph1 で追加
+GOOGLE_SERVICE_ACCOUNT_JSON=... # Ph2 で追加
+GA4_PROPERTY_ID=...             # Ph2 で追加
+STRIPE_SECRET_KEY=...           # Ph3 で追加
 ```
 
 ### 実装の拡張ルール
 
 1. APIクライアントは `src/utils/<service>-client.ts` に実装する
-2. `src/commands/report.ts` からクライアントを呼び出し、`ReportData` の対応フィールドに詰める
-3. APIが取得できない場合は例外を投げず、フォールバック値（`0` / `'-'`）を返してレポート生成を継続する
+2. 日次蓄積が必要な指標は `src/tasks/kpi.ts` に取得ロジックを追加し、`kpi-collect` コマンドで収集する
+3. `src/commands/report.ts` は蓄積済みデータを読んで `ReportData` の対応フィールドに詰める
+4. APIが取得できない場合は例外を投げず、フォールバック値（`0` / `'-'`）を返してレポート生成を継続する
 
 ---
 
-## フェーズ1：【基盤構築】リリース直後〜会員数10名まで
+## フェーズ1：【基盤構築】リリース直後〜会員数10名まで ✅ 実装済み
 
 ### 目的
 
@@ -50,13 +55,25 @@ STRIPE_SECRET_KEY=...            # Ph3 で追加
 
 ### 指標
 
-- **Visits（訪問者数）**: そもそも人が来ているか。（Cloudflare Pages API）
-- **Top Sources（流入元）**: SNS（Xなど）や検索から来ているか。（Cloudflare Pages API）
+- **UU（訪問者数）**: そもそも人が来ているか。（Cloudflare Zone Analytics API）
+- **PV（ページビュー）**: 一人あたり何ページ見ているか。（Cloudflare Zone Analytics API）
 
-### 実装
+### 実装（実態）
 
-- Cloudflare Analytics API を叩くCron Triggers（Workers）の実装
-- Discord/メールへの「日報サマリー」自動送信
+- **`npm run kpi-collect`** を毎日実行し、`httpRequests1dGroups`（日次集計）から前日の UU・PV を取得して `results/kpi-history.json` に蓄積
+- **`npm run report`** はその蓄積データの直近30日分を合計して表示
+
+### フェーズ1で判明した API 制限事項
+
+| 項目 | 当初計画 | 実態 |
+| --- | --- | --- |
+| 使用データセット | `httpRequestsAdaptiveGroups`（分単位） | `httpRequests1dGroups`（日次集計） |
+| 取得期間 | オンデマンドで過去7日分 | 無料プランは直近24hのみ → **毎日蓄積に変更** |
+| 流入経路（`clientRefererHost`） | 取得予定 | **無料プランでは利用不可** → `topSources: []` 固定 |
+| 人気記事TOP5 | 取得予定 | `kpi-collect` では収集対象外 → `topPages: []` 固定 |
+| エラー率 | 実値取得予定 | 現状 `'-'` 固定（未実装） |
+
+---
 
 ## フェーズ2：【信頼検証】会員数11名〜100名
 
@@ -72,8 +89,15 @@ STRIPE_SECRET_KEY=...            # Ph3 で追加
 
 ### 実装
 
-- Search Console / GA4 APIとの連携
+- Search Console / GA4 API との連携（GA4 は比較的長期の期間指定が可能なためオンデマンド取得で対応予定）
 - クリックイベントのカスタム集計（Cloudflare Workers Analytics Engine）
+
+### フェーズ1の知見を踏まえた注意点
+
+- 各 API の**利用制限を事前に確認**してから実装する
+- 制限が厳しい指標は、フェーズ1と同様に日次蓄積パターンへの切り替えを検討する
+
+---
 
 ## フェーズ3：【生存証明】会員数100名以降
 
@@ -89,7 +113,7 @@ STRIPE_SECRET_KEY=...            # Ph3 で追加
 
 ### 実装
 
-- 決済プラットフォーム API との連携
+- 決済プラットフォーム API との連携（月次データのためオンデマンド取得で対応）
 - 解約理由のログ収集と分析基盤
 
 ---
