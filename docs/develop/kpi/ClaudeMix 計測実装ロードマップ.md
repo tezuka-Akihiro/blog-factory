@@ -89,13 +89,21 @@ STRIPE_SECRET_KEY=...           # Ph3 で追加
 
 ### 実装
 
-- Search Console / GA4 API との連携（GA4 は比較的長期の期間指定が可能なためオンデマンド取得で対応予定）
+- Search Console / GA4 API との連携（**両 API ともオンデマンド取得で対応**）
 - クリックイベントのカスタム集計（Cloudflare Workers Analytics Engine）
 
-### フェーズ1の知見を踏まえた注意点
+### API 事前確認結果（2026-03-06 調査済み）
 
-- 各 API の**利用制限を事前に確認**してから実装する
-- 制限が厳しい指標は、フェーズ1と同様に日次蓄積パターンへの切り替えを検討する
+| API | 無料枠 | 取得可能期間 | データ遅延 | 取得戦略 |
+| --- | --- | --- | --- | --- |
+| Search Console API | 無料 | 最大16ヶ月 | 通常2〜3日 | **オンデマンド**（endDate: 3daysAgo） |
+| GA4 Data API | 無料 | 標準レポート無期限 | 24〜48時間 | **オンデマンド**（endDate: 2daysAgo） |
+
+#### GA4 メトリクス仕様（実装時の注意点）
+
+- `averageEngagementTime` は組み込みではなく `expression: "userEngagementDuration/activeUsers"` で導出する
+- `returningUsersRate` は**存在しない**。`newVsReturning` ディメンション + `activeUsers` で比率を手動計算する
+- `averageSessionDuration`（セッション時間）はエンゲージメント時間とは別物。使用しない
 
 ---
 

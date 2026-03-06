@@ -1,5 +1,39 @@
 # 作業手順書：フェーズ2 信頼検証・リード獲得基盤
 
+## 事前確認結果（2026-03-06 調査済み）
+
+フェーズ1の反省点を踏まえ、実装前に各 API の仕様を確認した。
+
+### Google Search Console API
+
+| 項目 | 確認結果 |
+| --- | --- |
+| 無料枠 | **無料**（Google Cloud プロジェクトで有効化するだけ） |
+| 取得可能期間 | **最大16ヶ月**（過去データを遡れる） |
+| データ遅延 | **2〜3日遅れ**（通常運用時）。クエリでは `endDate` を `3daysAgo` 以前に設定すること |
+| クォータ | 1,200 QPM/サイト、30,000,000 QPD/プロジェクト（実用上問題なし） |
+| 指名検索取得 | `searchanalytics.query` で `queryFilter` に "ClaudeMix" を指定すれば取得可能 |
+| 認証 | サービスアカウントで利用可能 |
+| **取得戦略** | **オンデマンド取得（過去28日）** で問題なし |
+
+### GA4 Data API
+
+| 項目 | 確認結果 |
+| --- | --- |
+| 無料枠 | **無料**（GA4 標準プロパティ） |
+| 取得可能期間 | **標準レポートは無期限**（集計済みデータ）。Explorations は2〜14ヶ月 |
+| データ遅延 | **24〜48時間**（最大72時間）。`endDate` は `yesterday` ではなく `2daysAgo` を推奨 |
+| **`averageEngagementTime`** | **利用可能**。ただし組み込みメトリクスではなく `expression: "userEngagementDuration/activeUsers"` で導出する |
+| **`returningUsersRate`** | **存在しない**。`newVsReturning` ディメンション（"new"/"returning" の文字列）を使い、`activeUsers` と組み合わせて比率を手動計算する |
+| `averageSessionDuration` | 別メトリクス（セッション時間）。エンゲージメント時間とは異なるため使用しない |
+| サンプリング | 複雑なクエリでは発生しうる。シンプルな日次集計では基本的に無サンプリング |
+| 認証 | サービスアカウントで利用可能 |
+| **取得戦略** | **オンデマンド取得（過去28日）** で問題なし |
+
+> **結論**: Search Console・GA4 ともに無料で過去28日分のオンデマンド取得が可能。フェーズ1のような「毎日蓄積が必須」の制約はない。ただし各 API のデータ遅延を考慮した日付指定が必要。
+
+---
+
 ## 前提条件
 
 - [ ] フェーズ1の実装が完了している（`npm run kpi-collect` が毎日実行されており、`results/kpi-history.json` にデータが蓄積されている）
@@ -7,7 +41,7 @@
 - [ ] Search Console でサービスアカウントのメールアドレスを「閲覧者」として追加済み
 - [ ] GA4 でサービスアカウントに「閲覧者」権限を付与済み
 - [ ] GA4 のプロパティ ID を確認済み
-- [ ] **各 API の無料枠・取得可能期間を事前に確認済み**（フェーズ1の反省点：無料プランでは利用不可の API があった）
+- [x] **各 API の無料枠・取得可能期間を事前に確認済み**（上記「事前確認結果」を参照）
 - [ ] cloudemix 側（Astro / Workers）でカスタムイベント計測の実装方針を決定済み
 
 ---
@@ -86,6 +120,9 @@ export async function fetchSearchConsoleData(days: number = 28): Promise<SearchC
     // Google Auth ライブラリでサービスアカウント認証
     // searchanalytics.query で "ClaudeMix" を含むクエリを絞り込み
     // clicks の合計を namedSearchCount として返す
+    //
+    // ポイント: データ遅延が通常 2〜3日 あるため、endDate は '3daysAgo' を推奨
+    //   startDate: <days日前>, endDate: <3日前>
     // ...
   } catch {
     return { namedSearchCount: 0 };
@@ -101,10 +138,12 @@ export async function fetchSearchConsoleData(days: number = 28): Promise<SearchC
 
 ### GA4 取得対象
 
-| 指標 | GA4 メトリクス | 格納先 |
+| 指標 | GA4 メトリクス / 取得方法 | 格納先 |
 | --- | --- | --- |
-| 平均エンゲージメント時間 | `averageSessionDuration` | `brand.avgEngagementTime` |
-| 再訪率 | `returningUsersRate` | `brand.returnRate` |
+| 平均エンゲージメント時間 | メトリクス `averageEngagementTime`（expression: `userEngagementDuration/activeUsers`） | `brand.avgEngagementTime` |
+| 再訪率 | ディメンション `newVsReturning` × メトリクス `activeUsers` で比率を手動計算 | `brand.returnRate` |
+
+> **注意**: `returningUsersRate` という組み込みメトリクスは GA4 API に存在しない。`newVsReturning` ディメンションを使い、"returning" のユーザー数 ÷ 全ユーザー数で算出すること。
 
 ### GA4 実装の骨格
 
@@ -127,6 +166,16 @@ export async function fetchGA4Data(days: number = 28): Promise<GA4Data> {
   try {
     // Google Auth でサービスアカウント認証
     // GA4 Data API (runReport) でメトリクスを取得
+    //
+    // ポイント①: averageEngagementTime は expression 指定が必要
+    //   { name: 'averageEngagementTime', expression: 'userEngagementDuration/activeUsers' }
+    //
+    // ポイント②: returningUsersRate は存在しない。
+    //   dimension: { name: 'newVsReturning' } + metric: { name: 'activeUsers' } を組み合わせ、
+    //   "returning" の activeUsers ÷ 全 activeUsers で比率を計算する
+    //
+    // ポイント③: データ遅延が 24〜48h あるため endDate は '2daysAgo' を推奨
+    //   startDate: `${days}daysAgo`, endDate: '2daysAgo'
     // ...
   } catch {
     return { avgEngagementTime: '-', returnRate: '-' };
