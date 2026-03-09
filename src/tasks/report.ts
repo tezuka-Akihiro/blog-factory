@@ -353,27 +353,27 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
     </div>
 
     <!-- PAGE 3: 6W2H シート -->
-    <div class="page">
+    <div class="page" style="display: flex; flex-direction: column;">
         <div class="owner-header">
             <div style="font-size: 10pt; color: #999;">作成日: ${new Date().toLocaleDateString('ja-JP')}</div>
         </div>
         <h1>6W2H シート</h1>
 
         ${strategy.six_w2h ? `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
+        <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 10px; overflow: hidden;">
             ${([
-              { key: 'Who',      label: 'Who（誰が）',       value: strategy.six_w2h.who },
-              { key: 'What',     label: 'What（何を）',      value: strategy.six_w2h.what },
-              { key: 'When',     label: 'When（いつ）',      value: strategy.six_w2h.when },
-              { key: 'Where',    label: 'Where（どこで）',   value: strategy.six_w2h.where },
-              { key: 'Why',      label: 'Why（なぜ）',       value: strategy.six_w2h.why },
-              { key: 'Which',    label: 'Which（どれを）',   value: strategy.six_w2h.which },
-              { key: 'How',      label: 'How（どのように）', value: strategy.six_w2h.how },
-              { key: 'HowMuch',  label: 'How Much（いくら）', value: strategy.six_w2h.how_much },
-            ] as Array<{ key: string; label: string; value: string }>).map(item => `
-            <div class="section-box">
+              { label: 'Who（誰が）',        value: strategy.six_w2h.who,      span: false },
+              { label: 'What（何を）',       value: strategy.six_w2h.what,     span: false },
+              { label: 'When（いつ）',       value: strategy.six_w2h.when,     span: false },
+              { label: 'Where（どこで）',    value: strategy.six_w2h.where,    span: false },
+              { label: 'Why（なぜ）',        value: strategy.six_w2h.why,      span: false },
+              { label: 'Which（どれを）',    value: strategy.six_w2h.which,    span: false },
+              { label: 'How（どのように）',  value: strategy.six_w2h.how,      span: true  },
+              { label: 'How Much（いくら）', value: strategy.six_w2h.how_much, span: false },
+            ] as Array<{ label: string; value: string; span: boolean }>).map(item => `
+            <div class="section-box" style="${item.span ? 'grid-column: span 2;' : ''}">
                 <div class="section-title">${item.label}</div>
-                <div class="content-area" style="margin-top: 8px; font-size: 12pt;">${item.value}</div>
+                <div class="content-area" style="margin-top: 10px; font-size: 12pt;">${item.value}</div>
             </div>
             `).join('')}
         </div>
