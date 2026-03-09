@@ -360,7 +360,7 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
         <h1>6W2H シート</h1>
 
         ${strategy.six_w2h ? `
-        <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 10px; overflow: hidden;">
+        <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 10px; padding-top: 14px;">
             ${([
               { label: 'Who（誰が）',        value: strategy.six_w2h.who,      span: false },
               { label: 'What（何を）',       value: strategy.six_w2h.what,     span: false },
