@@ -4,6 +4,17 @@ export interface ManagementLayer {
   value: string;
 }
 
+export interface SixW2H {
+  who: string;
+  what: string;
+  when: string;
+  where: string;
+  why: string;
+  which: string;
+  how: string;
+  how_much: string;
+}
+
 export interface Strategy {
   owner: {
     name: string;
@@ -20,4 +31,5 @@ export interface Strategy {
   performance_manual?: {
     update_frequency: string;
   };
+  six_w2h?: SixW2H;
 }

@@ -229,7 +229,7 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
             </div>
         </div>
 
-        <div class="footer">1/2 - 経営デザインシート (統合版)</div>
+        <div class="footer">1/3 - 経営デザインシート (統合版)</div>
     </div>
 
     <!-- PAGE 2: 経営診断書 -->
@@ -349,7 +349,37 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
             </div>
         </div>
 
-        <div class="footer">2/2 - 経営診断書 (Management Diagnosis Report)</div>
+        <div class="footer">2/3 - 経営診断書 (Management Diagnosis Report)</div>
+    </div>
+
+    <!-- PAGE 3: 6W2H シート -->
+    <div class="page" style="display: flex; flex-direction: column;">
+        <div class="owner-header">
+            <div style="font-size: 10pt; color: #999;">作成日: ${new Date().toLocaleDateString('ja-JP')}</div>
+        </div>
+        <h1>6W2H シート</h1>
+
+        ${strategy.six_w2h ? `
+        <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 10px; padding-top: 14px;">
+            ${([
+              { label: 'Who（誰が）',        value: strategy.six_w2h.who,      span: false },
+              { label: 'What（何を）',       value: strategy.six_w2h.what,     span: false },
+              { label: 'When（いつ）',       value: strategy.six_w2h.when,     span: false },
+              { label: 'Where（どこで）',    value: strategy.six_w2h.where,    span: false },
+              { label: 'Why（なぜ）',        value: strategy.six_w2h.why,      span: false },
+              { label: 'Which（どれを）',    value: strategy.six_w2h.which,    span: false },
+              { label: 'How（どのように）',  value: strategy.six_w2h.how,      span: true  },
+              { label: 'How Much（いくら）', value: strategy.six_w2h.how_much, span: false },
+            ] as Array<{ label: string; value: string; span: boolean }>).map(item => `
+            <div class="section-box" style="${item.span ? 'grid-column: span 2;' : ''}">
+                <div class="section-title">${item.label}</div>
+                <div class="content-area" style="margin-top: 10px; font-size: 12pt;">${item.value}</div>
+            </div>
+            `).join('')}
+        </div>
+        ` : '<div style="color: #999; padding: 20px;">strategy.yaml に six_w2h セクションが設定されていません。</div>'}
+
+        <div class="footer">3/3 - 6W2H シート</div>
     </div>
 </body>
 </html>
