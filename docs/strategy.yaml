@@ -39,3 +39,13 @@ consultation_items:
 
 performance_manual:
   update_frequency: "週1〜2記事"
+
+six_w2h:
+  who: "AI時代の個人開発者・ビジネスオーナー"
+  what: "技術知識アーカイブの定期公開"
+  when: "週1〜2本のペースで継続的に"
+  where: "独自ドメインブログ（ClaudeMix）"
+  why: "AI時代に壊れやすいソフトを長く動かす知識を残す"
+  which: "有料アーカイブモデル（月額サブスク）"
+  how: "実際の開発経験をもとに記事化し、有料公開"
+  how_much: "有料会員100人 → 月間利益10万円"
