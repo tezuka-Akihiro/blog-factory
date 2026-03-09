@@ -12,6 +12,20 @@ export interface BlogPost {
   publishedAt?: string;
   author?: string;
   paywall?: boolean;
+  freeContentHeading?: string | undefined;
+  jsonLd?: boolean;
+}
+
+export interface BlogFrontmatter {
+  title?: string;
+  description?: string;
+  category?: string;
+  tags?: string[];
+  updatedAt?: string;
+  slug?: string;
+  publishedAt?: string;
+  author?: string;
+  paywall?: boolean;
   freeContentHeading?: string;
   jsonLd?: boolean;
 }

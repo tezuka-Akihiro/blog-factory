@@ -45,23 +45,24 @@ export async function loadStrategy(): Promise<Strategy> {
   }
 }
 
-function replacePlaceholders(obj: any, replacements: Record<string, string>): any {
+function replacePlaceholders<T>(obj: T, replacements: Record<string, string>): T {
   if (typeof obj === 'string') {
-    let result = obj;
+    let result: string = obj;
     for (const [key, value] of Object.entries(replacements)) {
       result = result.replace(new RegExp(`{{${key}}}`, 'g'), value);
     }
-    return result;
+    return result as unknown as T;
   }
   if (Array.isArray(obj)) {
-    return obj.map(item => replacePlaceholders(item, replacements));
+    return obj.map(item => replacePlaceholders(item, replacements)) as unknown as T;
   }
   if (typeof obj === 'object' && obj !== null) {
-    const newObj: any = {};
-    for (const key in obj) {
-      newObj[key] = replacePlaceholders(obj[key], replacements);
+    const newObj: Record<string, unknown> = {};
+    const record = obj as Record<string, unknown>;
+    for (const key in record) {
+      newObj[key] = replacePlaceholders(record[key], replacements);
     }
-    return newObj;
+    return newObj as unknown as T;
   }
   return obj;
 }
