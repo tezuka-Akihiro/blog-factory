@@ -12,6 +12,20 @@ export interface BlogPost {
   publishedAt?: string;
   author?: string;
   paywall?: boolean;
+  freeContentHeading?: string | undefined;
+  jsonLd?: boolean;
+}
+
+export interface BlogFrontmatter {
+  title?: string;
+  description?: string;
+  category?: string;
+  tags?: string[];
+  updatedAt?: string;
+  slug?: string;
+  publishedAt?: string;
+  author?: string;
+  paywall?: boolean;
   freeContentHeading?: string;
   jsonLd?: boolean;
 }
@@ -63,12 +77,26 @@ export interface D1MonitoringReport {
   created_at: string;
 }
 
+export interface BlogSnapshot {
+  generatedAt: string;       // ISO 8601
+  totalArticles: number;
+  last30DaysUpdates: number;
+}
+
+export interface KpiRecord {
+  date: string; // YYYY-MM-DD (UTC)
+  pv: number;
+  uu: number;
+  requests: number;
+  bytes: number;
+  collectedAt: string; // ISO timestamp
+}
+
 export interface ReportData {
   strategy: import('./strategy').Strategy;
   stats: {
     totalArticles: number;
     last30DaysUpdates: number;
-    jsonLdCoverage: number;
     lighthouseScore: number;
     monitoring: {
       criticalCount: number;
@@ -84,6 +112,17 @@ export interface ReportData {
       pv: number | string;
       uu: number | string;
       avgStayTime: number | string;
+      topSources: Array<{ host: string; visits: number }>;
+      topPages: Array<{ path: string; requests: number }>;
+    };
+    brand: {
+      namedSearchCount: number;
+      avgEngagementTime: string;
+      returnRate: string;
+      avgScrollDepth: string;
+    };
+    conversion: {
+      microCvCount: number;
     };
   };
 }

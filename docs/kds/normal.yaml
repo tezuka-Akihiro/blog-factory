@@ -1,0 +1,40 @@
+owner:
+  name: "優作"
+  role: "システムの延命医"
+
+historical_context:
+  resources:
+    - "Webアプリ開発8年の知見に基づく延命術"
+    - "既存{{ARTICLE_COUNT}}記事のストック資産"
+    - "独自ドメインの記事公開・販売システム"
+    - "注目度が高いがニッチな技術の組み合わせのwebアプリ構築知見"
+  business_model: "有料記事の販売"
+  value: "最先端×個人開発専用で説得力最強の「技術書2.0」"
+
+future_ideal:
+  resources:
+    - "この分野の日本の第一人者という地位"
+    - "月間利益10万円（有料会員100名獲得）"
+  business_model: "有料記事の販売"
+  value: "個人開発で月10万稼ぐ、堅牢で説得力のある技術書の元祖"
+
+strategic_challenges:
+  - "認知の拡大"
+  - "有料会員の拡大"
+  - "ブログ以外の開発の並走"
+
+external_environment:
+  opportunity:
+    - "AIが作る「壊れやすい建物」の増加"
+    - "「自分一人の拠点」を持ちたい人の増加"
+    - "「動かない教科書」の限界"
+  threat:
+    - "短期的な流行や効率ばかりが評価され、誠実な『手仕事』が埋もれてしまうこと"
+    - "個人開発者の作ったシステムに対し、社会全体が『セキュリティが不安だ』と疑念を抱く風潮の蔓延"
+
+consultation_items:
+  - "価値創造の流れにおける収益化動線の妥当性"
+  - "既存{{ARTICLE_COUNT}}記事の資産化に向けた優先順位"
+
+performance_manual:
+  update_frequency: "週1〜2本ペース（目標）"

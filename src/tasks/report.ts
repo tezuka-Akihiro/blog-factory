@@ -1,9 +1,28 @@
 import { writeFile, mkdir, readFile } from 'fs/promises';
 import { join } from 'path';
 import matter from 'gray-matter';
-import { InspectionResult, ReportData } from '../types';
+import { BlogSnapshot, InspectionResult, ReportData } from '../types';
 import { Logger } from '../utils/logger';
 import { Strategy } from '../types/strategy';
+
+const SNAPSHOT_PATH = join(process.cwd(), 'data', 'blog-snapshot.json');
+
+export async function saveBlogSnapshot(snapshot: BlogSnapshot): Promise<void> {
+  await mkdir(join(process.cwd(), 'data'), { recursive: true });
+  await writeFile(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2), 'utf-8');
+  Logger.success(`Blog snapshot saved to ${SNAPSHOT_PATH}`);
+}
+
+export async function loadBlogSnapshot(): Promise<BlogSnapshot> {
+  try {
+    const content = await readFile(SNAPSHOT_PATH, 'utf-8');
+    return JSON.parse(content) as BlogSnapshot;
+  } catch {
+    throw new Error(
+      'data/blog-snapshot.json が見つかりません。先に `npm run summary` を実行してスナップショットを生成してください。',
+    );
+  }
+}
 
 export async function loadStrategy(): Promise<Strategy> {
   const strategyPath = join(process.cwd(), 'docs', 'strategy.yaml');
@@ -26,23 +45,24 @@ export async function loadStrategy(): Promise<Strategy> {
   }
 }
 
-function replacePlaceholders(obj: any, replacements: Record<string, string>): any {
+function replacePlaceholders<T>(obj: T, replacements: Record<string, string>): T {
   if (typeof obj === 'string') {
-    let result = obj;
+    let result: string = obj;
     for (const [key, value] of Object.entries(replacements)) {
       result = result.replace(new RegExp(`{{${key}}}`, 'g'), value);
     }
-    return result;
+    return result as unknown as T;
   }
   if (Array.isArray(obj)) {
-    return obj.map(item => replacePlaceholders(item, replacements));
+    return obj.map(item => replacePlaceholders(item, replacements)) as unknown as T;
   }
   if (typeof obj === 'object' && obj !== null) {
-    const newObj: any = {};
-    for (const key in obj) {
-      newObj[key] = replacePlaceholders(obj[key], replacements);
+    const newObj: Record<string, unknown> = {};
+    const record = obj as Record<string, unknown>;
+    for (const key in record) {
+      newObj[key] = replacePlaceholders(record[key], replacements);
     }
-    return newObj;
+    return newObj as unknown as T;
   }
   return obj;
 }
@@ -115,11 +135,11 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
         /* Page 1 Specifics (Management Design Sheet) */
         .design-sheet-grid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin-top: 20px; }
         .circle-box {
-            border: 1px solid #001f3f; border-radius: 50%; width: 100mm; height: 100mm;
+            border: 1px solid #aaa; border-radius: 50%; width: 120mm; height: 120mm;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 20px; background: #fff; position: relative;
         }
-        .layer-box { width: 85%; border-bottom: 1px solid #eee; margin-bottom: 8px; padding-bottom: 4px; }
+        .layer-box { width: 100%; border-bottom: 1px solid #eee; margin-bottom: 8px; padding-bottom: 4px; }
         .layer-title { font-weight: bold; font-size: 11pt; color: #001f3f; border-left: 3px solid #001f3f; padding-left: 5px; margin-bottom: 2px; }
         .arrow { font-size: 30pt; color: #001f3f; }
 
@@ -220,56 +240,29 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
         <h1>経営診断書 (Management Diagnosis)</h1>
 
         <div class="grid-container diagnosis-grid">
-            <!-- Top: QUALITY & TRUST -->
-            <div class="section-box">
-                <div class="section-title">QUALITY & TRUST（技術的誠実さ）</div>
-                <div class="grid-container three-cols" style="margin-top: 10px;">
-                    <div class="metric-card">
-                        <div class="metric-label">エラー発生率</div>
-                        <div class="metric-value value-lg" style="color: #ef4444;">${stats.monitoring.errorRate}</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Lighthouse Score</div>
-                        <div class="metric-value value-lg">100/100</div>
-                    </div>
-                    <div class="metric-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                        <div class="badge">CERTIFIED FOUNDATION</div>
-                        <div style="font-size: 10pt; color: #666; margin-top: 4px;">（認証済み基盤）</div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Middle: BUSINESS & ASSETS -->
             <div class="grid-container two-cols">
                 <div class="section-box">
                     <div class="section-title">BUSINESS GROWTH（ビジネス進捗）</div>
                     <div class="grid-container two-cols" style="margin-top: 10px;">
-                        <div class="metric-card" style="grid-column: span 2;">
-                            <div class="metric-label">サブスクリプション契約数</div>
-                            <div class="metric-value value-xl">${stats.business.activeSubscriptions}</div>
-                        </div>
                         <div class="metric-card">
                             <div class="metric-label">有料会員数 / 目標</div>
-                            <div class="metric-value value-lg">${stats.business.paidMembers} / 200〜333</div>
+                            <div class="metric-value value-lg">${stats.business.paidMembers} / 100</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-label">無料会員数（将来の転換候補）</div>
+                            <div class="metric-label">無料会員数</div>
                             <div class="metric-value value-lg">${stats.business.freeMembers}</div>
                         </div>
                     </div>
                 </div>
                 <div class="section-box">
                     <div class="section-title">INTELLECTUAL ASSETS（資産の状態）</div>
-                    <div class="grid-container two-cols" style="margin-top: 10px;">
+                    <div class="grid-container" style="margin-top: 10px;">
                         <div class="metric-card">
                             <div class="metric-label">総記事数</div>
                             <div class="metric-value value-lg">${stats.totalArticles} posts</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-label">JSON-LD 網羅率</div>
-                            <div class="metric-value value-lg">${stats.jsonLdCoverage}%</div>
-                        </div>
-                        <div class="metric-card" style="grid-column: span 2;">
                             <div class="metric-label">30日以内の更新数</div>
                             <div class="metric-value value-lg">${stats.last30DaysUpdates} updates</div>
                         </div>
@@ -277,9 +270,65 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
                 </div>
             </div>
 
+            <!-- Traffic + Brand + Top5 -->
+            <div class="grid-container three-cols">
+                <div class="section-box">
+                    <div class="section-title">TRAFFIC（直近30日）</div>
+                    <div class="grid-container three-cols" style="margin-top: 10px;">
+                        <div class="metric-card">
+                            <div class="metric-label">UU（訪問者数）</div>
+                            <div class="metric-value value-lg">${stats.traffic.uu}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">PV（ページ表示数）</div>
+                            <div class="metric-value value-lg">${stats.traffic.pv}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">エラー率</div>
+                            <div class="metric-value value-lg">${stats.monitoring.errorRate}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-box">
+                    <div class="section-title">BRAND TRACTION（直近28日）</div>
+                    <div class="grid-container" style="margin-top: 10px; grid-template-columns: 1fr 1fr;">
+                        <div class="metric-card">
+                            <div class="metric-label">指名検索数</div>
+                            <div class="metric-value value-lg">${stats.brand.namedSearchCount}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">リード転換数</div>
+                            <div class="metric-value value-lg">${stats.conversion.microCvCount}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">平均エンゲージメント時間</div>
+                            <div class="metric-value" style="font-size: 14pt;">${stats.brand.avgEngagementTime}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">再訪率</div>
+                            <div class="metric-value" style="font-size: 14pt;">${stats.brand.returnRate}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-box">
+                    <div class="section-title">人気記事 TOP 5（直近24時間）</div>
+                    <div style="margin-top: 10px; font-size: 10pt;">
+                        ${stats.traffic.topPages.length > 0
+                          ? stats.traffic.topPages.map((p, i) => `
+                            <div style="padding: 3px 0; border-bottom: 1px solid #eee; display: flex; gap: 8px;">
+                                <span style="color: #001f3f; font-weight: bold; min-width: 18px;">${i + 1}.</span>
+                                <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.path}</span>
+                                <span style="color: #666;">${p.requests} req</span>
+                            </div>`).join('')
+                          : '<div style="color: #999; padding: 8px 0;">データなし</div>'
+                        }
+                    </div>
+                </div>
+            </div>
+
             <!-- Bottom: CONSULTATION & MEMO -->
             <div class="section-box">
-                <div class="section-title">CONSULTATION & MEMO（対話エリア）</div>
+                <div class="section-title">CONSULTATION & MEMO</div>
                 <div class="grid-container two-cols" style="margin-top: 10px; height: 100%;">
                     <div>
                         <div style="font-weight: bold; font-size: 11pt; color: #001f3f; margin-bottom: 5px;">■ 本日の相談事項</div>

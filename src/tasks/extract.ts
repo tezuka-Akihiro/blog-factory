@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import matter from 'gray-matter';
-import { BlogPost } from '../types';
+import { BlogPost, BlogFrontmatter } from '../types';
 import { Logger } from '../utils/logger';
 import { relative } from 'path';
 
@@ -11,7 +11,7 @@ export async function extractPost(
 ): Promise<BlogPost> {
   const content = await fs.readFile(filePath, 'utf-8');
   const stats = await fs.stat(filePath);
-  const { data, content: body } = matter(content);
+  const { data, content: body } = matter(content) as unknown as { data: BlogFrontmatter; content: string };
 
   const title = data.title || '';
   const category = data.category || '';
@@ -41,16 +41,16 @@ export async function extractPost(
     description,
     category,
     path: relative(basePath, filePath),
-    lastModified: typeof lastModified === 'string' ? lastModified : lastModified.toISOString(),
+    lastModified: typeof lastModified === 'string' ? lastModified : (lastModified as { toISOString(): string }).toISOString(),
     isPaid,
     characterCount,
     tags,
     body,
     slug,
-    publishedAt: typeof publishedAt === 'string' ? publishedAt : publishedAt?.toISOString?.() || String(publishedAt),
+    publishedAt: typeof publishedAt === 'string' ? publishedAt : (publishedAt as { toISOString?(): string })?.toISOString?.() || String(publishedAt),
     author,
     paywall: data.paywall === true,
-    freeContentHeading: data.freeContentHeading,
+    freeContentHeading: data.freeContentHeading ?? undefined,
     jsonLd,
   };
 }

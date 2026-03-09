@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(grep -rn \"ClaudeMix\\\\|content/blog/posts\\\\|C:/Users\\\\|C:\\\\\\\\Users\" \"C:/Users/tizuh/Documents/blog-factory/.claude/skills/blog-catalog/\")",
-      "Bash(node -e \"require.resolve\\(''dotenv''\\)\")"
+      "Bash(node -e \"require.resolve\\(''dotenv''\\)\")",
+      "Bash(npm run report)",
+      "Bash(node -e \":*)",
+      "Bash(npx ts-node -e \":*)",
+      "Bash(npx ts-node --skip-project -e \":*)",
+      "Bash(npm run summary)"
     ]
   }
 }

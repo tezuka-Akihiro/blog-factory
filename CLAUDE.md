@@ -17,7 +17,12 @@ npm run inspect
 npm run inspect -- --category="ClaudeMix ガイド"
 
 # サマリーレポートの生成（results/summary.md に出力）
+# 同時に data/blog-snapshot.json（git追跡）を更新する
 npm run summary
+
+# 経営レポートの生成（results/report.html に出力）
+# 外部リポジトリ不要。data/blog-snapshot.json を参照する
+npm run report
 ```
 
 TypeScriptのビルドは `ts-node` で直接実行するため、`npm run build` は不要です。

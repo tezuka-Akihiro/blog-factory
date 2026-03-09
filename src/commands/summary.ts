@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import { scanFiles } from '../tasks/scan';
 import { extractPost } from '../tasks/extract';
 import { calculateSummary, formatSummaryToMarkdown } from '../tasks/summary';
-import { saveMarkdownReport } from '../tasks/report';
+import { saveMarkdownReport, saveBlogSnapshot } from '../tasks/report';
 import { Logger } from '../utils/logger';
 import path from 'path';
 import { loadBlogSpec, getTagToGroupMap } from '../utils/spec-loader';
@@ -30,6 +30,20 @@ export const summaryCommand = new Command('summary')
       const markdown = formatSummaryToMarkdown(summaryData);
 
       await saveMarkdownReport(markdown, 'summary.md');
+
+      // 30日以内更新数を算出してスナップショットを保存（git追跡対象）
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const last30DaysUpdates = articles.filter(a => {
+        const d = a.lastModified ? new Date(a.lastModified) : new Date(a.publishedAt || 0);
+        return d >= thirtyDaysAgo;
+      }).length;
+
+      await saveBlogSnapshot({
+        generatedAt: new Date().toISOString(),
+        totalArticles: summaryData.totalPosts,
+        last30DaysUpdates,
+      });
 
       Logger.success('Summary generation completed successfully');
       Logger.info(`Total Articles: ${summaryData.totalPosts}`);
