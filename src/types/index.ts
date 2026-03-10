@@ -89,6 +89,7 @@ export interface KpiRecord {
   uu: number;
   requests: number;
   bytes: number;
+  errorRate?: string; // "0.0%" 形式、取得失敗時は undefined
   collectedAt: string; // ISO timestamp
 }
 

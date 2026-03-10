@@ -7,7 +7,9 @@
       "Bash(node -e \":*)",
       "Bash(npx ts-node -e \":*)",
       "Bash(npx ts-node --skip-project -e \":*)",
-      "Bash(npm run summary)"
+      "Bash(npm run summary)",
+      "Bash(node -e \"const d=require\\(''./data/blog-snapshot.json''\\); console.log\\(''keys:'', Object.keys\\(d\\)\\); console.log\\(''type of first val:'', typeof Object.values\\(d\\)[0]\\);\")",
+      "Bash(node -e \"const d=require\\(''./data/blog-snapshot.json''\\); console.log\\(JSON.stringify\\(d, null, 2\\)\\);\")"
     ]
   }
 }

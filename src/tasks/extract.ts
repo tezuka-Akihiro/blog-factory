@@ -17,7 +17,7 @@ export async function extractPost(
   const category = data.category || '';
   const description = data.description || '';
   const tags = Array.isArray(data.tags) ? data.tags : [];
-  const lastModified = data.updatedAt || stats.mtime.toISOString();
+  const lastModified = data.updatedAt || data.publishedAt || undefined;
   const slug = data.slug || '';
   const publishedAt = data.publishedAt || '';
   const author = data.author || '';
@@ -36,12 +36,16 @@ export async function extractPost(
     Logger.warn(`Category is missing in ${filePath}`);
   }
 
+  const lastModifiedStr = lastModified != null
+    ? (typeof lastModified === 'string' ? lastModified : (lastModified as { toISOString(): string }).toISOString())
+    : undefined;
+
   return {
     title,
     description,
     category,
     path: relative(basePath, filePath),
-    lastModified: typeof lastModified === 'string' ? lastModified : (lastModified as { toISOString(): string }).toISOString(),
+    ...(lastModifiedStr !== undefined ? { lastModified: lastModifiedStr } : {}),
     isPaid,
     characterCount,
     tags,

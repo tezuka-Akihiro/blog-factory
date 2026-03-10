@@ -19,6 +19,13 @@ interface CfGraphQLResponse {
           uniq: { uniques: number };
           dimensions: { date: string };
         }>;
+        errorGroups?: Array<{
+          count: number;
+          dimensions: { edgeResponseStatus: string };
+        }>;
+        totalGroups?: Array<{
+          count: number;
+        }>;
       }>;
     };
   };
@@ -41,9 +48,11 @@ export async function fetchYesterdayKpi(): Promise<KpiRecord> {
   const yesterday = new Date();
   yesterday.setUTCDate(yesterday.getUTCDate() - 1);
   const dateStr = yesterday.toISOString().slice(0, 10); // "YYYY-MM-DD"
+  const since = `${dateStr}T00:00:00Z`;
+  const until = `${dateStr}T23:59:59Z`;
 
   const query = `
-    query KpiDaily($zoneTag: string!, $date: Date!) {
+    query KpiDaily($zoneTag: string!, $date: Date!, $since: String!, $until: String!) {
       viewer {
         zones(filter: { zoneTag: $zoneTag }) {
           httpRequests1dGroups(
@@ -54,6 +63,18 @@ export async function fetchYesterdayKpi(): Promise<KpiRecord> {
             sum { pageViews requests bytes }
             uniq { uniques }
             dimensions { date }
+          }
+          errorGroups: httpRequestsAdaptiveGroups(
+            filter: { datetimeMinute_geq: $since, datetimeMinute_leq: $until, edgeResponseStatus_geq: 400 }
+            limit: 1
+          ) {
+            count
+          }
+          totalGroups: httpRequestsAdaptiveGroups(
+            filter: { datetimeMinute_geq: $since, datetimeMinute_leq: $until }
+            limit: 1
+          ) {
+            count
           }
         }
       }
@@ -66,7 +87,7 @@ export async function fetchYesterdayKpi(): Promise<KpiRecord> {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${apiToken}`,
     },
-    body: JSON.stringify({ query, variables: { zoneTag, date: dateStr } }),
+    body: JSON.stringify({ query, variables: { zoneTag, date: dateStr, since, until } }),
   });
 
   if (!response.ok) {
@@ -79,7 +100,15 @@ export async function fetchYesterdayKpi(): Promise<KpiRecord> {
     throw new Error(`Cloudflare GraphQL error: ${json.errors.map(e => e.message).join(', ')}`);
   }
 
-  const group = json.data?.viewer?.zones?.[0]?.httpRequests1dGroups?.[0];
+  const zone = json.data?.viewer?.zones?.[0];
+  const group = zone?.httpRequests1dGroups?.[0];
+
+  // エラー率計算
+  const errorCount = zone?.errorGroups?.[0]?.count ?? 0;
+  const totalCount = zone?.totalGroups?.[0]?.count ?? 0;
+  const errorRate = totalCount > 0
+    ? `${((errorCount / totalCount) * 100).toFixed(1)}%`
+    : '0.0%';
 
   if (!group) {
     // API がデータを返さない場合は 0 で記録する（後で上書き可能）
@@ -90,6 +119,7 @@ export async function fetchYesterdayKpi(): Promise<KpiRecord> {
       uu: 0,
       requests: 0,
       bytes: 0,
+      errorRate,
       collectedAt: new Date().toISOString(),
     };
   }
@@ -100,6 +130,7 @@ export async function fetchYesterdayKpi(): Promise<KpiRecord> {
     uu: group.uniq.uniques,
     requests: group.sum.requests,
     bytes: group.sum.bytes,
+    errorRate,
     collectedAt: new Date().toISOString(),
   };
 }
@@ -139,12 +170,12 @@ export async function appendKpiRecord(record: KpiRecord): Promise<void> {
 }
 
 /**
- * レポート用：直近 N 日分の合計 PV・UU を返す。
+ * レポート用：直近 N 日分の合計 PV・UU、および最新レコードのエラー率を返す。
  */
 export function summarizeKpiHistory(
   history: KpiRecord[],
   days: number = 30
-): { pv: number; uu: number } {
+): { pv: number; uu: number; errorRate: string } {
   const cutoff = new Date();
   cutoff.setUTCDate(cutoff.getUTCDate() - days);
   const cutoffStr = cutoff.toISOString().slice(0, 10);
@@ -152,5 +183,10 @@ export function summarizeKpiHistory(
   const recent = history.filter(r => r.date >= cutoffStr);
   const pv = recent.reduce((sum, r) => sum + r.pv, 0);
   const uu = recent.reduce((sum, r) => sum + r.uu, 0);
-  return { pv, uu };
+
+  // 最新レコードのエラー率を使用（未記録分は '-'）
+  const sorted = [...history].sort((a, b) => b.date.localeCompare(a.date));
+  const errorRate = sorted.find(r => r.errorRate !== undefined)?.errorRate ?? '-';
+
+  return { pv, uu, errorRate };
 }

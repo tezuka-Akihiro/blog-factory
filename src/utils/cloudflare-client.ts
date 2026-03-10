@@ -52,8 +52,7 @@ interface CloudflareGraphQLResponse {
   viewer: {
     zones: Array<{
       totals: Array<{
-        count: number;
-        sum: { visits: number };
+        sum: { visits: number; pageViews: number };
       }>;
       topPages: Array<{
         count: number;
@@ -82,8 +81,7 @@ async function fetchZoneMetrics(
             filter: { datetimeMinute_geq: $since, datetimeMinute_leq: $until }
             limit: 1
           ) {
-            count
-            sum { visits }
+            sum { visits pageViews }
           }
           topPages: httpRequestsAdaptiveGroups(
             filter: { datetimeMinute_geq: $since, datetimeMinute_leq: $until }
@@ -117,7 +115,7 @@ async function fetchZoneMetrics(
 
   const totalsGroup = zone.totals?.[0];
   const uu: number = totalsGroup?.sum?.visits ?? 0;
-  const pv: number = totalsGroup?.count ?? 0;
+  const pv: number = totalsGroup?.sum?.pageViews ?? 0;
 
   const topPages: CloudflareTrafficData['topPages'] = (zone.topPages ?? [])
     .filter((g) => {

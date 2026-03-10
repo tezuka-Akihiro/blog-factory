@@ -32,8 +32,7 @@ export const reportCommand = new Command('report')
       const criticalCount = monitoringLogs.filter(log => log.severity === 'CRITICAL').length;
       const warningCount = monitoringLogs.filter(log => log.severity === 'WARNING').length;
 
-      // エラー率は kpi-collect 実行時のスナップショットには未対応のため '-' とする
-      const errorRate = '-';
+      const errorRate = kpiSummary.errorRate;
 
       // Exclude test data (2 users)
       let remainingToSubtract = 2;

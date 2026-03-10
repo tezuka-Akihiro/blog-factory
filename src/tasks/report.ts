@@ -144,7 +144,12 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
         .arrow { font-size: 30pt; color: #001f3f; }
 
         /* Page 2 Specifics (Management Diagnosis) */
-        .diagnosis-grid { grid-template-rows: auto auto 1fr; }
+        .funnel-arrow { display: flex; align-items: center; font-size: 18pt; color: #001f3f; padding: 0 2px; }
+        .stage-box { border: 1px solid #001f3f; padding: 8px; position: relative; display: flex; flex-direction: column; gap: 6px; }
+        .stage-title { position: absolute; top: -10px; left: 10px; background: white; padding: 0 6px; font-weight: bold; font-size: 9pt; color: #001f3f; border: 1px solid #001f3f; white-space: nowrap; }
+        .stage-metric { text-align: center; padding: 5px 4px; border: 1px solid #eee; }
+        .stage-metric .metric-label { font-size: 9pt; color: #666; margin-bottom: 3px; }
+        .stage-metric .metric-value { font-weight: bold; color: #001f3f; font-size: 14pt; }
         .badge {
             display: inline-block; padding: 4px 12px; border-radius: 20px;
             background: #001f3f; color: white; font-weight: bold; font-size: 10pt;
@@ -233,103 +238,119 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
     </div>
 
     <!-- PAGE 2: 経営診断書 -->
-    <div class="page">
+    <div class="page" style="display: flex; flex-direction: column; gap: 20px;">
         <div class="owner-header">
             <div style="font-size: 10pt; color: #999;">作成日: ${new Date().toLocaleDateString('ja-JP')}</div>
         </div>
         <h1>経営診断書 (Management Diagnosis)</h1>
 
-        <div class="grid-container diagnosis-grid">
-            <!-- Middle: BUSINESS & ASSETS -->
-            <div class="grid-container two-cols">
-                <div class="section-box">
-                    <div class="section-title">BUSINESS GROWTH（ビジネス進捗）</div>
-                    <div class="grid-container two-cols" style="margin-top: 10px;">
-                        <div class="metric-card">
-                            <div class="metric-label">有料会員数 / 目標</div>
-                            <div class="metric-value value-lg">${stats.business.paidMembers} / 100</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">無料会員数</div>
-                            <div class="metric-value value-lg">${stats.business.freeMembers}</div>
-                        </div>
+        <!-- Funnel Row: 資産 → 流入 → 閲覧状況 → 無料会員 → 有料会員 -->
+        <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr auto 1fr; align-items: stretch; gap: 4px;">
+
+            <!-- Stage 1: 資産 -->
+            <div class="stage-box">
+                <div class="stage-title">① 資産（コンテンツ）</div>
+                <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                    <div class="stage-metric">
+                        <div class="metric-label">総記事数</div>
+                        <div class="metric-value" style="font-size: 16pt;">${stats.totalArticles}</div>
+                        <div style="font-size: 8pt; color: #999;">posts</div>
                     </div>
-                </div>
-                <div class="section-box">
-                    <div class="section-title">INTELLECTUAL ASSETS（資産の状態）</div>
-                    <div class="grid-container" style="margin-top: 10px;">
-                        <div class="metric-card">
-                            <div class="metric-label">総記事数</div>
-                            <div class="metric-value value-lg">${stats.totalArticles} posts</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">30日以内の更新数</div>
-                            <div class="metric-value value-lg">${stats.last30DaysUpdates} updates</div>
-                        </div>
+                    <div class="stage-metric">
+                        <div class="metric-label">30日更新数</div>
+                        <div class="metric-value" style="font-size: 16pt;">${stats.last30DaysUpdates}</div>
+                        <div style="font-size: 8pt; color: #999;">updates</div>
                     </div>
                 </div>
             </div>
+            <div class="funnel-arrow">▶</div>
 
-            <!-- Traffic + Brand + Top5 -->
-            <div class="grid-container three-cols">
-                <div class="section-box">
-                    <div class="section-title">TRAFFIC（直近30日）</div>
-                    <div class="grid-container three-cols" style="margin-top: 10px;">
-                        <div class="metric-card">
-                            <div class="metric-label">UU（訪問者数）</div>
-                            <div class="metric-value value-lg">${stats.traffic.uu}</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">PV（ページ表示数）</div>
-                            <div class="metric-value value-lg">${stats.traffic.pv}</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">エラー率</div>
-                            <div class="metric-value value-lg">${stats.monitoring.errorRate}</div>
-                        </div>
+            <!-- Stage 2: 流入 -->
+            <div class="stage-box">
+                <div class="stage-title">② 流入（直近24h）</div>
+                <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                    <div class="stage-metric">
+                        <div class="metric-label">UU</div>
+                        <div class="metric-value" style="font-size: 16pt;">${stats.traffic.uu}</div>
+                        <div style="font-size: 8pt; color: #999;">訪問者数</div>
+                    </div>
+                    <div class="stage-metric">
+                        <div class="metric-label">PV</div>
+                        <div class="metric-value" style="font-size: 16pt;">${stats.traffic.pv}</div>
+                        <div style="font-size: 8pt; color: #999;">ページ表示</div>
                     </div>
                 </div>
-                <div class="section-box">
-                    <div class="section-title">BRAND TRACTION（直近28日）</div>
-                    <div class="grid-container" style="margin-top: 10px; grid-template-columns: 1fr 1fr;">
-                        <div class="metric-card">
-                            <div class="metric-label">指名検索数</div>
-                            <div class="metric-value value-lg">${stats.brand.namedSearchCount}</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">リード転換数</div>
-                            <div class="metric-value value-lg">${stats.conversion.microCvCount}</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">平均エンゲージメント時間</div>
-                            <div class="metric-value" style="font-size: 14pt;">${stats.brand.avgEngagementTime}</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">再訪率</div>
-                            <div class="metric-value" style="font-size: 14pt;">${stats.brand.returnRate}</div>
-                        </div>
-                    </div>
+                <div class="stage-metric" style="grid-column: span 2;">
+                    <div class="metric-label">エラー率</div>
+                    <div class="metric-value" style="font-size: 14pt;">${stats.monitoring.errorRate}</div>
                 </div>
-                <div class="section-box">
-                    <div class="section-title">人気記事 TOP 5（直近24時間）</div>
-                    <div style="margin-top: 10px; font-size: 10pt;">
-                        ${stats.traffic.topPages.length > 0
-                          ? stats.traffic.topPages.map((p, i) => `
-                            <div style="padding: 3px 0; border-bottom: 1px solid #eee; display: flex; gap: 8px;">
-                                <span style="color: #001f3f; font-weight: bold; min-width: 18px;">${i + 1}.</span>
-                                <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.path}</span>
-                                <span style="color: #666;">${p.requests} req</span>
-                            </div>`).join('')
-                          : '<div style="color: #999; padding: 8px 0;">データなし</div>'
-                        }
+            </div>
+            <div class="funnel-arrow">▶</div>
+
+            <!-- Stage 3: 閲覧状況 -->
+            <div class="stage-box">
+                <div class="stage-title">③ 閲覧状況（直近28日）</div>
+                <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 4px;">
+                    <div class="stage-metric">
+                        <div class="metric-label">指名検索数</div>
+                        <div class="metric-value" style="font-size: 16pt;">${stats.brand.namedSearchCount}</div>
+                    </div>
+                    <div class="stage-metric">
+                        <div class="metric-label">平均エンゲージメント時間</div>
+                        <div class="metric-value" style="font-size: 14pt;">${stats.brand.avgEngagementTime}</div>
+                    </div>
+                    <div class="stage-metric">
+                        <div class="metric-label">再訪率</div>
+                        <div class="metric-value" style="font-size: 14pt;">${stats.brand.returnRate}</div>
                     </div>
                 </div>
             </div>
+            <div class="funnel-arrow">▶</div>
 
-            <!-- Bottom: CONSULTATION & MEMO -->
+            <!-- Stage 4: 無料会員 -->
+            <div class="stage-box" style="justify-content: center; align-items: center; text-align: center;">
+                <div class="stage-title">④ 無料会員</div>
+                <div style="margin-top: 12px;">
+                    <div style="font-size: 9pt; color: #666; margin-bottom: 4px;">無料会員数</div>
+                    <div style="font-weight: bold; color: #001f3f; font-size: 28pt;">${stats.business.freeMembers}</div>
+                    <div style="font-size: 8pt; color: #999;">members</div>
+                </div>
+            </div>
+            <div class="funnel-arrow">▶</div>
+
+            <!-- Stage 5: 有料会員 -->
+            <div class="stage-box" style="justify-content: center; align-items: center; text-align: center; background: #f8faff;">
+                <div class="stage-title" style="background: #f8faff;">⑤ 有料会員</div>
+                <div style="margin-top: 12px;">
+                    <div style="font-size: 9pt; color: #666; margin-bottom: 4px;">有料会員数 / 目標</div>
+                    <div style="font-weight: bold; color: #001f3f; font-size: 28pt;">${stats.business.paidMembers}</div>
+                    <div style="font-size: 10pt; color: #aaa;">/ 100</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Row: TOP5 + CONSULTATION -->
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px; flex: 1; min-height: 0; margin-bottom: 8mm;">
+            <!-- TOP5 -->
+            <div class="section-box">
+                <div class="section-title">人気記事 TOP5（直近24時間）</div>
+                <div style="margin-top: 10px; font-size: 9.5pt; overflow: hidden;">
+                    ${stats.traffic.topPages.length > 0
+                      ? stats.traffic.topPages.map((p, i) => `
+                        <div style="padding: 3px 0; border-bottom: 1px solid #eee; display: flex; gap: 6px; align-items: center;">
+                            <span style="color: #001f3f; font-weight: bold; min-width: 16px;">${i + 1}.</span>
+                            <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.path}</span>
+                            <span style="color: #666; white-space: nowrap;">${p.requests} req</span>
+                        </div>`).join('')
+                      : '<div style="color: #999; padding: 8px 0;">データなし</div>'
+                    }
+                </div>
+            </div>
+
+            <!-- CONSULTATION & MEMO -->
             <div class="section-box">
                 <div class="section-title">CONSULTATION & MEMO</div>
-                <div class="grid-container two-cols" style="margin-top: 10px; height: 100%;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; height: calc(100% - 10px);">
                     <div>
                         <div style="font-weight: bold; font-size: 11pt; color: #001f3f; margin-bottom: 5px;">■ 本日の相談事項</div>
                         <ul style="list-style: none; padding: 0;">
@@ -360,22 +381,43 @@ export async function generateHtmlReport(data: ReportData): Promise<string> {
         <h1>6W2H シート</h1>
 
         ${strategy.six_w2h ? `
-        <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 10px; padding-top: 14px;">
-            ${([
-              { label: 'Who（誰が）',        value: strategy.six_w2h.who,      span: false },
-              { label: 'What（何を）',       value: strategy.six_w2h.what,     span: false },
-              { label: 'When（いつ）',       value: strategy.six_w2h.when,     span: false },
-              { label: 'Where（どこで）',    value: strategy.six_w2h.where,    span: false },
-              { label: 'Why（なぜ）',        value: strategy.six_w2h.why,      span: false },
-              { label: 'Which（どれを）',    value: strategy.six_w2h.which,    span: false },
-              { label: 'How（どのように）',  value: strategy.six_w2h.how,      span: true  },
-              { label: 'How Much（いくら）', value: strategy.six_w2h.how_much, span: false },
-            ] as Array<{ label: string; value: string; span: boolean }>).map(item => `
-            <div class="section-box" style="${item.span ? 'grid-column: span 2;' : ''}">
-                <div class="section-title">${item.label}</div>
-                <div class="content-area" style="margin-top: 10px; font-size: 12pt;">${item.value}</div>
+        <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 20px; padding-top: 14px; margin-bottom: 8mm;">
+            <div class="section-box">
+                <div class="section-title">Who（誰が）</div>
+                <div class="content-area" style="margin-top: 10px; font-size: 12pt;">${strategy.six_w2h.who}</div>
             </div>
-            `).join('')}
+            <div class="section-box">
+                <div class="section-title">Whom（誰に）</div>
+                <div class="content-area" style="margin-top: 10px; font-size: 12pt;">${strategy.six_w2h.whom}</div>
+            </div>
+            <div class="section-box">
+                <div class="section-title">What（何を）</div>
+                <div class="content-area" style="margin-top: 10px; font-size: 12pt;">${strategy.six_w2h.what}</div>
+            </div>
+            <div class="section-box">
+                <div class="section-title">How（どのように）</div>
+                <div class="content-area" style="margin-top: 10px; font-size: 12pt;">${strategy.six_w2h.how}</div>
+            </div>
+            <div class="section-box" style="background: #f0f4ff; border: 2px solid #3b82f6;">
+                <div class="section-title" style="color: #1d4ed8;">起業アイディア</div>
+                <div class="content-area" style="margin-top: 10px; font-size: 12pt; font-weight: bold;">${strategy.six_w2h.idea}</div>
+            </div>
+            <div class="section-box">
+                <div class="section-title">Why（それはなぜ）</div>
+                <div class="content-area" style="margin-top: 10px; font-size: 12pt;">${strategy.six_w2h.why}</div>
+            </div>
+            <div class="section-box">
+                <div class="section-title">When（いつ）</div>
+                <div class="content-area" style="margin-top: 10px; font-size: 12pt;">${strategy.six_w2h.when}</div>
+            </div>
+            <div class="section-box">
+                <div class="section-title">Where（どこで）</div>
+                <div class="content-area" style="margin-top: 10px; font-size: 12pt;">${strategy.six_w2h.where}</div>
+            </div>
+            <div class="section-box">
+                <div class="section-title">How Much（いくらで）</div>
+                <div class="content-area" style="margin-top: 10px; font-size: 12pt;">${strategy.six_w2h.how_much}</div>
+            </div>
         </div>
         ` : '<div style="color: #999; padding: 20px;">strategy.yaml に six_w2h セクションが設定されていません。</div>'}
 

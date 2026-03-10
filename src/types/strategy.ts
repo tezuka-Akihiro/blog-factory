@@ -6,20 +6,17 @@ export interface ManagementLayer {
 
 export interface SixW2H {
   who: string;
+  whom: string;
   what: string;
+  how: string;
+  idea: string;
+  why: string;
   when: string;
   where: string;
-  why: string;
-  which: string;
-  how: string;
   how_much: string;
 }
 
 export interface Strategy {
-  owner: {
-    name: string;
-    role: string;
-  };
   historical_context: ManagementLayer;
   future_ideal: ManagementLayer;
   strategic_challenges: string[];
