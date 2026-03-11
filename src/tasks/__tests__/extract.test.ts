@@ -103,7 +103,7 @@ describe('extractPost', () => {
     ])('$field=$value がある場合に正しく反映される', async ({ field, value }) => {
       vi.mocked(fs.readFile).mockResolvedValue(makeFrontmatter({ [field]: value }));
       const result = await extractPost('/blog/article.md', '/blog');
-      expect(result[field]).toBe(value);
+      expect((result as unknown as Record<string, unknown>)[field]).toBe(value);
     });
 
     it('tags が frontmatter にない場合 → 空配列を返す', async () => {
