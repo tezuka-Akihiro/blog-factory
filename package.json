@@ -14,7 +14,9 @@
     "export": "ts-node src/commands/index.ts export",
     "update-metadata": "ts-node src/commands/index.ts update-metadata",
     "report": "ts-node src/commands/index.ts report",
-    "kpi-collect": "ts-node src/commands/index.ts kpi-collect"
+    "kpi-collect": "ts-node src/commands/index.ts kpi-collect",
+    "lint": "tsc --noEmit && eslint src",
+    "lint:fix": "eslint src --fix"
   },
   "repository": {
     "type": "git",
@@ -31,8 +33,10 @@
   "devDependencies": {
     "@types/node": "^25.3.0",
     "@vitest/coverage-v8": "^4.0.18",
+    "eslint": "^10.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.0",
     "vitest": "^4.0.18"
   },
   "dependencies": {

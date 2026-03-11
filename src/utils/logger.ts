@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 export const Logger = {
   info: (message: string) => console.log(`🔍 ${message}`),
   extract: (message: string) => console.log(`📄 ${message}`),

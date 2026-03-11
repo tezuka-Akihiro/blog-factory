@@ -1,0 +1,70 @@
+# リファクター区分定義（SSOT）
+# オペレーターはここに区分を追加・編集する
+# skill: 専用リファクタースキルのパス。null の場合は refactor_guide に従って AI が対応する
+
+categories:
+  - id: lint
+    name: リントチェック
+    description: TypeScript コンパイルエラー・ESLint ワーニングの解消
+    targets:
+      - src/
+    skill: null
+    refactor_guide: |
+      - `npm run lint` を実行してエラーを確認する
+      - `no-console` エラー: console.log を Logger に置き換える（CLAUDE.md 規約）
+      - `@typescript-eslint/no-explicit-any` エラー: 具体的な型に置き換える
+      - `@typescript-eslint/no-unused-vars` / tsc `noUnusedLocals` エラー: 未使用変数・インポートを削除する
+      - `npm run lint:fix` で自動修正できるものは先に実行する
+
+  - id: types
+    name: 型定義
+    description: src/types/index.ts の整合性・厳密化。BlogPost・SummaryData・InspectionResult の型精度向上
+    targets:
+      - src/types/
+      - src/tasks/
+    skill: null
+    refactor_guide: |
+      - src/types/index.ts の型定義と src/tasks/ の実装の整合性を確認する
+      - any 型の使用を具体的な型に置き換える
+      - 型推論で解決できる冗長な型注釈を削除する
+
+  - id: task-logic
+    name: タスクロジック
+    description: src/tasks/ のビジネスロジック品質。重複排除・関数分割・可読性向上
+    targets:
+      - src/tasks/
+    skill: null
+    refactor_guide: |
+      - 重複するロジックを関数に抽出する
+      - 100行を超える関数を分割する
+      - マジックナンバー・マジックストリングを定数化する
+
+  - id: commands
+    name: CLIコマンド
+    description: src/commands/ の薄いレイヤー責務の維持。ロジックの tasks/ への移譲確認
+    targets:
+      - src/commands/
+    skill: null
+    refactor_guide: |
+      - ビジネスロジックが commands/ に混入していないか確認する
+      - ロジックは tasks/ に移譲し、コマンドファイルは薄いレイヤーに保つ
+
+  - id: utils
+    name: ユーティリティ
+    description: src/utils/ のユーティリティ関数品質。logger・spec-loader の整合性確認
+    targets:
+      - src/utils/
+    skill: null
+    refactor_guide: |
+      - logger.ts の Logger インターフェースの一貫性を確認する
+      - spec-loader.ts のエラーハンドリングを確認する
+
+  - id: spec-yaml
+    name: 仕様定義
+    description: docs/blog-spec.yaml の内容精度。カテゴリ・タグ・アクセス制御定義の正確性
+    targets:
+      - docs/
+    skill: null
+    refactor_guide: |
+      - docs/blog-spec.yaml のカテゴリ・タグ定義を src/ の実装と照合する
+      - 不整合（実装にあるが定義にない、または逆）を修正する

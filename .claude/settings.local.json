@@ -1,15 +1,28 @@
 {
   "permissions": {
     "allow": [
-      "Bash(grep -rn \"ClaudeMix\\\\|content/blog/posts\\\\|C:/Users\\\\|C:\\\\\\\\Users\" \"C:/Users/tizuh/Documents/blog-factory/.claude/skills/blog-catalog/\")",
-      "Bash(node -e \"require.resolve\\(''dotenv''\\)\")",
-      "Bash(npm run report)",
-      "Bash(node -e \":*)",
-      "Bash(npx ts-node -e \":*)",
-      "Bash(npx ts-node --skip-project -e \":*)",
-      "Bash(npm run summary)",
-      "Bash(node -e \"const d=require\\(''./data/blog-snapshot.json''\\); console.log\\(''keys:'', Object.keys\\(d\\)\\); console.log\\(''type of first val:'', typeof Object.values\\(d\\)[0]\\);\")",
-      "Bash(node -e \"const d=require\\(''./data/blog-snapshot.json''\\); console.log\\(JSON.stringify\\(d, null, 2\\)\\);\")"
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(npx ts-node*)",
+      "Bash(node *)",
+      "Bash(git status)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git add *)",
+      "Bash(git commit*)",
+      "Bash(git branch*)",
+      "Bash(git checkout *)",
+      "Bash(git switch *)",
+      "Bash(git fetch*)",
+      "Bash(git pull*)",
+      "Bash(ls *)",
+      "Bash(ls)",
+      "Bash(npx eslint*)",
+      "Bash(cd * && npm run *)",
+      "Bash(cd * && npm install *)",
+      "Bash(cd * && npx ts-node*)",
+      "Bash(cd * && npx eslint*)",
+      "Bash(cd * && node *)"
     ]
   }
 }

@@ -10,7 +10,6 @@ export async function extractPost(
   publicCategories: string[] = []
 ): Promise<BlogPost> {
   const content = await fs.readFile(filePath, 'utf-8');
-  const stats = await fs.stat(filePath);
   const { data, content: body } = matter(content) as unknown as { data: BlogFrontmatter; content: string };
 
   const title = data.title || '';
