@@ -19,7 +19,7 @@
 以下のパスにリファクター記録ファイルが存在するか確認する。
 
 ```text
-C:\Users\tizuh\.claude\projects\c--Users-tizuh-Documents-blog-factory\memory\refactor-record.json
+.claude/skills/auto-refactor/refactor-record.json
 ```
 
 **存在しない場合**: 記録なしとして扱い、全区分を「未実施」と見なす。

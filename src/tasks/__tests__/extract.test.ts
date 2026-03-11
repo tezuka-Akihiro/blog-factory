@@ -7,7 +7,7 @@ vi.mock('fs/promises');
 
 beforeEach(() => {
   vi.clearAllMocks();
-  vi.mocked(fs.stat).mockResolvedValue({ mtime: new Date('2025-01-15T00:00:00Z') } as any);
+  vi.mocked(fs.stat).mockResolvedValue({ mtime: new Date('2025-01-15T00:00:00Z') } as unknown as import('fs').Stats);
 });
 
 describe('extractPost', () => {
@@ -98,12 +98,12 @@ describe('extractPost', () => {
 
   describe('オプションフィールド', () => {
     it.each([
-      { field: 'paywall', value: true },
-      { field: 'jsonLd', value: true },
+      { field: 'paywall' as const, value: true },
+      { field: 'jsonLd' as const, value: true },
     ])('$field=$value がある場合に正しく反映される', async ({ field, value }) => {
       vi.mocked(fs.readFile).mockResolvedValue(makeFrontmatter({ [field]: value }));
       const result = await extractPost('/blog/article.md', '/blog');
-      expect((result as any)[field]).toBe(value);
+      expect(result[field]).toBe(value);
     });
 
     it('tags が frontmatter にない場合 → 空配列を返す', async () => {
