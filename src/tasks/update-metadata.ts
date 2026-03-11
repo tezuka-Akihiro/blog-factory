@@ -3,7 +3,7 @@ import { parse } from 'csv-parse/sync';
 import path from 'path';
 import { Logger } from '../utils/logger';
 
-interface CsvRow {
+export interface CsvMetadataRow {
   Title: string;
   Description: string;
   Category: string;
@@ -19,11 +19,11 @@ interface CsvRow {
 
 export async function updateMetadataFromCsv(csvPath: string, sourcePath: string): Promise<void> {
   const csvContent = await fs.readFile(csvPath, 'utf-8');
-  const records: CsvRow[] = parse(csvContent, {
+  const records = parse(csvContent, {
     columns: true,
     skip_empty_lines: true,
     trim: true,
-  });
+  }) as CsvMetadataRow[];
 
   for (const record of records) {
     const filePath = record.Path;

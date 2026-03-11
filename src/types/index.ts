@@ -21,9 +21,9 @@ export interface BlogFrontmatter {
   description?: string;
   category?: string;
   tags?: string[];
-  updatedAt?: string;
+  updatedAt?: string | Date;
   slug?: string;
-  publishedAt?: string;
+  publishedAt?: string | Date;
   author?: string;
   paywall?: boolean;
   freeContentHeading?: string;
