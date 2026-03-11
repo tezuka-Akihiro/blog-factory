@@ -16,7 +16,17 @@ export async function extractPost(
   const category = data.category || '';
   const description = data.description || '';
   const tags = Array.isArray(data.tags) ? data.tags : [];
-  const lastModified = data.updatedAt || data.publishedAt || undefined;
+  let lastModified: string | Date | undefined = data.updatedAt || data.publishedAt || undefined;
+
+  if (!lastModified) {
+    try {
+      const stats = await fs.stat(filePath);
+      lastModified = stats.mtime;
+    } catch {
+      // Ignore
+    }
+  }
+
   const slug = data.slug || '';
   const publishedAt = data.publishedAt || '';
   const author = data.author || '';

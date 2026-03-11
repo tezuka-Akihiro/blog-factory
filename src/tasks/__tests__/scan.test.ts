@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { readdir } from 'fs/promises';
 import { scanFiles } from '../scan';
+
 import { makeDirent } from './test-utils';
+
 
 vi.mock('fs/promises');
 

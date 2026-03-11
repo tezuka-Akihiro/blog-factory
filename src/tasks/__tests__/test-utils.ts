@@ -13,7 +13,7 @@ export function makeDirent(name: string, isDir: boolean): Dirent {
     isSymbolicLink: () => false,
     path: '',
     parentPath: '',
-  } as Dirent;
+  } as unknown as Dirent;
 }
 
 export function makePost(overrides: Partial<BlogPost> = {}): BlogPost {
