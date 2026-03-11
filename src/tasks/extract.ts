@@ -17,7 +17,6 @@ export async function extractPost(
   const description = data.description || '';
   const tags = Array.isArray(data.tags) ? data.tags : [];
   let lastModified: string | Date | undefined = data.updatedAt || data.publishedAt || undefined;
-
   if (!lastModified) {
     try {
       const stats = await fs.stat(filePath);
@@ -26,7 +25,6 @@ export async function extractPost(
       // Ignore
     }
   }
-
   const slug = data.slug || '';
   const publishedAt = data.publishedAt || '';
   const author = data.author || '';

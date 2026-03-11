@@ -98,8 +98,8 @@ describe('extractPost', () => {
 
   describe('オプションフィールド', () => {
     it.each([
-      { field: 'paywall', value: true },
-      { field: 'jsonLd', value: true },
+      { field: 'paywall' as const, value: true },
+      { field: 'jsonLd' as const, value: true },
     ])('$field=$value がある場合に正しく反映される', async ({ field, value }) => {
       vi.mocked(fs.readFile).mockResolvedValue(makeFrontmatter({ [field]: value }));
       const result = await extractPost('/blog/article.md', '/blog');
