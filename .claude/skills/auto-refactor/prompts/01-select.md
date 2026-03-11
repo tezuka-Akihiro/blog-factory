@@ -19,10 +19,10 @@
 以下のパスにリファクター記録ファイルが存在するか確認する。
 
 ```text
-C:\Users\tizuh\.claude\projects\c--Users-tizuh-Documents-blog-factory\memory\refactor-record.json
+.claude/skills/auto-refactor/refactor-record.json
 ```
 
-**存在しない場合**: 記録なしとして扱い、全区分を「未実施」と見なす。
+**存在しない場合**: 記録なしとして扱い、全区分を「未実施」と見なす。ファイルは Phase 3 で新規作成する。
 
 **存在する場合**: JSON を読み込み、各区分の `lastExecuted` 日付を取得する。
 
@@ -53,7 +53,7 @@ C:\Users\tizuh\.claude\projects\c--Users-tizuh-Documents-blog-factory\memory\ref
 
 ### Step 3: 選択ロジックを適用する
 
-以下の優先順位で区分を1つ選択する。
+以下の優先順位で区分を1つ選択する。**この順序は厳守。任意の区分を優先したり、スキップしたりしてはならない。**
 
 1. `null`（未実施）の区分 → `categories.yaml` の定義順で最初のもの
 2. 全区分が実施済みの場合 → `lastExecuted` が最も古い区分

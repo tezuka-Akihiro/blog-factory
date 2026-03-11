@@ -20,7 +20,7 @@
 ### Step 1: 記録ファイルのパスを確認
 
 ```text
-C:\Users\tizuh\.claude\projects\c--Users-tizuh-Documents-blog-factory\memory\refactor-record.json
+.claude/skills/auto-refactor/refactor-record.json
 ```
 
 ### Step 2: 記録を更新する

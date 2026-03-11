@@ -22,7 +22,10 @@
       "Bash(cd * && npm install *)",
       "Bash(cd * && npx ts-node*)",
       "Bash(cd * && npx eslint*)",
-      "Bash(cd * && node *)"
+      "Bash(cd * && node *)",
+      "Read(//c/Users/tizuh/.claude/**)",
+      "Bash(find ~/.claude/plugins -name *)",
+      "Read(//c/Users/tizuh/**)"
     ]
   }
 }
