@@ -1,5 +1,11 @@
 import { BlogPost } from '../types';
 
+/**
+ * Converts a list of blog posts to a CSV string.
+ *
+ * @param posts Array of BlogPost objects.
+ * @returns A CSV formatted string.
+ */
 export function convertToCSV(posts: BlogPost[]): string {
   const headers = [
     'Title',
@@ -29,10 +35,17 @@ export function convertToCSV(posts: BlogPost[]): string {
     post.author || ''
   ]);
 
-  const csvContent = [
+  return [
     headers.join(','),
-    ...rows.map(row => row.map(value => `"${value.replace(/"/g, '""')}"`).join(','))
+    ...rows.map(row => formatCsvRow(row))
   ].join('\n');
+}
 
-  return csvContent;
+/**
+ * Formats an array of values into a single CSV row string.
+ */
+function formatCsvRow(row: string[]): string {
+  return row
+    .map(value => `"${value.replace(/"/g, '""')}"`)
+    .join(',');
 }
