@@ -4,7 +4,7 @@ import { join } from 'path';
 export async function scanFiles(directory: string): Promise<string[]> {
   const entries = await readdir(directory, { withFileTypes: true });
   const results = await Promise.all(
-    entries.map(async (entry) => {
+    entries.map(async (entry): Promise<string | string[]> => {
       if (entry.name === 'node_modules') return [];
 
       const fullPath = join(directory, entry.name);

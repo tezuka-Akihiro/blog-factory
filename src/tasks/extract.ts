@@ -9,14 +9,16 @@ export async function extractPost(
   basePath: string,
   publicCategories: string[] = []
 ): Promise<BlogPost> {
-  const content = await fs.readFile(filePath, 'utf-8');
-  const { data, content: body } = matter(content) as unknown as { data: BlogFrontmatter; content: string };
+  const fileContent = await fs.readFile(filePath, 'utf-8');
+  const { data, content: body } = matter(fileContent);
+  const frontmatter = data as BlogFrontmatter;
 
-  const title = data.title || '';
-  const category = data.category || '';
-  const description = data.description || '';
-  const tags = Array.isArray(data.tags) ? data.tags : [];
-  let lastModified: string | Date | undefined = data.updatedAt || data.publishedAt || undefined;
+  const title = frontmatter.title || '';
+  const category = frontmatter.category || '';
+  const description = frontmatter.description || '';
+  const tags = Array.isArray(frontmatter.tags) ? frontmatter.tags : [];
+
+  let lastModified: string | Date | undefined = frontmatter.updatedAt || frontmatter.publishedAt;
   if (!lastModified) {
     try {
       const stats = await fs.stat(filePath);
@@ -25,16 +27,17 @@ export async function extractPost(
       // Ignore
     }
   }
-  const slug = data.slug || '';
-  const publishedAt = data.publishedAt || '';
-  const author = data.author || '';
+
+  const slug = frontmatter.slug || '';
+  const publishedAt = frontmatter.publishedAt || '';
+  const author = frontmatter.author || '';
 
   const characterCount = body.replace(/\s/g, '').length;
 
   const isPublicCategory = Array.isArray(publicCategories) && publicCategories.includes(category);
-  const hasFreeContentHeading = !!data.freeContentHeading;
+  const hasFreeContentHeading = !!frontmatter.freeContentHeading;
   const isPaid = !isPublicCategory || hasFreeContentHeading;
-  const jsonLd = data.jsonLd === true;
+  const jsonLd = frontmatter.jsonLd === true;
 
   if (!title) {
     Logger.warn(`Title is missing in ${filePath}`);
@@ -43,9 +46,13 @@ export async function extractPost(
     Logger.warn(`Category is missing in ${filePath}`);
   }
 
-  const lastModifiedStr = lastModified != null
-    ? (typeof lastModified === 'string' ? lastModified : (lastModified as { toISOString(): string }).toISOString())
-    : undefined;
+  const lastModifiedStr = lastModified instanceof Date
+    ? lastModified.toISOString()
+    : lastModified;
+
+  const publishedAtStr = publishedAt instanceof Date
+    ? publishedAt.toISOString()
+    : String(publishedAt);
 
   return {
     title,
@@ -58,10 +65,10 @@ export async function extractPost(
     tags,
     body,
     slug,
-    publishedAt: typeof publishedAt === 'string' ? publishedAt : (publishedAt as { toISOString?(): string })?.toISOString?.() || String(publishedAt),
+    publishedAt: publishedAtStr,
     author,
-    paywall: data.paywall === true,
-    freeContentHeading: data.freeContentHeading ?? undefined,
+    paywall: frontmatter.paywall === true,
+    freeContentHeading: frontmatter.freeContentHeading ?? undefined,
     jsonLd,
   };
 }

@@ -22,9 +22,9 @@ export function calculateSummary(
     }
 
     const groupsInArticle = new Set<string>();
-    if (article.tags && article.tags.length > 0) {
+    if (article.tags.length > 0) {
       for (const tag of article.tags) {
-        const group = tagToGroupMap[tag] || 'その他';
+        const group = tagToGroupMap[tag] ?? 'その他';
         groupsInArticle.add(group);
       }
     } else {
