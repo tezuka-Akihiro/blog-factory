@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { readdir } from 'fs/promises';
 import { scanFiles } from '../scan';
+import { normalizePath } from '../../utils/fs';
 
 import { makeDirent } from './test-utils';
 
@@ -34,7 +35,7 @@ describe('scanFiles', () => {
     ])('$name', async ({ entries, expected }) => {
       vi.mocked(readdir).mockResolvedValue(entries as any);
       const result = await scanFiles('/blog');
-      expect(result).toEqual(expected);
+      expect(result.map(normalizePath)).toEqual(expected);
     });
 
     it('サブディレクトリを再帰的に走査する', async () => {
@@ -43,7 +44,7 @@ describe('scanFiles', () => {
         .mockResolvedValueOnce([makeDirent('article.md', false)] as any);
 
       const result = await scanFiles('/blog');
-      expect(result).toEqual(['/blog/subdir/article.md']);
+      expect(result.map(normalizePath)).toEqual(['/blog/subdir/article.md']);
     });
 
     it('複数階層のネストを正しく走査する', async () => {
@@ -53,7 +54,7 @@ describe('scanFiles', () => {
         .mockResolvedValueOnce([makeDirent('deep.md', false)] as any);
 
       const result = await scanFiles('/root');
-      expect(result).toEqual(['/root/level1/level2/deep.md']);
+      expect(result.map(normalizePath)).toEqual(['/root/level1/level2/deep.md']);
     });
   });
 
@@ -65,7 +66,7 @@ describe('scanFiles', () => {
       ] as any);
 
       const result = await scanFiles('/blog');
-      expect(result).toEqual(['/blog/article.md']);
+      expect(result.map(normalizePath)).toEqual(['/blog/article.md']);
       expect(readdir).toHaveBeenCalledTimes(1);
     });
 
@@ -76,7 +77,7 @@ describe('scanFiles', () => {
       ] as any);
 
       const result = await scanFiles('/blog');
-      expect(result).toEqual(['/blog/readme.md']);
+      expect(result.map(normalizePath)).toEqual(['/blog/readme.md']);
     });
   });
 

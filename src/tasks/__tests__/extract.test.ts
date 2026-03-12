@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import fs from 'fs/promises';
 import { extractPost } from '../extract';
 import { makeFrontmatter } from './test-utils';
+import { normalizePath } from '../../utils/fs';
 
 vi.mock('fs/promises');
 
@@ -33,7 +34,7 @@ describe('extractPost', () => {
     it('path は basePath からの相対パスを返す', async () => {
       vi.mocked(fs.readFile).mockResolvedValue(makeFrontmatter());
       const result = await extractPost('/blog/posts/sub/article.md', '/blog');
-      expect(result.path).toBe('posts/sub/article.md');
+      expect(normalizePath(result.path)).toBe('posts/sub/article.md');
     });
 
     it('characterCount は空白を除いた本文文字数を返す', async () => {
