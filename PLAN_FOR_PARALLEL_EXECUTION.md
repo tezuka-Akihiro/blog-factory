@@ -1,60 +1,48 @@
 # リファクター並列実行計画書
 
-生成日: 2026-03-11
-対象区分: 型定義 (types)
+生成日: 2026-03-12
+対象区分: タスクロジック（task-logic）
 
 ## 概要
 
-現在、`src/types/` および `src/tasks/` 配下には計13ファイルが存在し、特に `src/tasks/report.ts` (469行) は規模が大きく、一括でのリファクタリングはコンテキスト汚染やデグレードのリスクが高いと判断しました。
-構造的品質を維持しつつ、型定義をより厳密化（Strict Typing）するために、以下の3タスクに分割して並列実行することを推奨します。
+`src/tasks/` 配下のファイル群、特に `src/tasks/report.ts` (469行) が 300行の制限を超えているため、作業を分割して並列実行することを推奨します。
 
 ## 並列指示文
 
-### タスク 1: 型定義の基盤強化 (Core Types)
+### タスク 1: report.ts の分割と整理
 
-対象:
-- `src/types/index.ts`
-- `src/types/strategy.ts`
+対象: `src/tasks/report.ts`
 
-指示内容:
-1. `exactOptionalPropertyTypes: true` への適合を再確認し、必要に応じて `| undefined` を追加する。
-2. 可能な限り `string` 型を文字列リテラル型や Union 型（例: カテゴリ名、ステータス、ログレベル等）に置き換える。
-3. `ReportData` や `Strategy` インターフェースにおけるオプショナルプロパティの妥当性を精査する。
-
----
-
-### タスク 2: 大規模タスクの型整合性向上 (Complex Logic)
-
-対象:
-- `src/tasks/report.ts`
-- `src/tasks/kpi.ts`
-- `src/tasks/summary.ts`
-
-指示内容:
-1. `src/types/` で強化された新しい型定義を適用し、ロジック内の型不整合を解消する。
-2. 外部データ（D1 レスポンスや YAML パース結果）に対する型ガードまたはバリデーションを強化する。
-3. `report.ts` 内の `replacePlaceholders` などのジェネリクス関数の型安全性を再検証する。
-4. 冗長な型注釈（型推論で解決可能なもの）を削除し、コードのノイズを減らす。
+**具体的なリファクター指示:**
+1. `generateHtmlReport` 関数が巨大なテンプレート文字列を含んでおり、可読性が低いため、コンポーネント単位（各ページやセクションごと）に関数を分割してください。
+2. テンプレートエンジンを使用せず、純粋な文字列生成関数として整理し、各関数の行数を 100行以内に抑えてください。
+3. `replacePlaceholders` などのユーティリティ的なロジックが混在している場合は、必要に応じて `src/utils/` への移動を検討してください。
+4. ファイル全体の行数を 300行以下に削減してください。
 
 ---
 
-### タスク 3: 周辺タスクおよびユーティリティの型整理 (Supporting Tasks)
+### タスク 2: KPI および統計ロジックの改善
 
-対象:
-- `src/tasks/delivery.ts`
-- `src/tasks/export.ts`
-- `src/tasks/extract.ts`
-- `src/tasks/info.ts`
-- `src/tasks/scan.ts`
-- `src/tasks/stats.ts`
-- `src/tasks/update-metadata.ts`
+対象: `src/tasks/kpi.ts`, `src/tasks/stats.ts`, `src/tasks/summary.ts`
 
-指示内容:
-1. ファイルシステム操作 (`fs/promises`) や `gray-matter` の戻り値に対する型アサーションを、可能な限り型ガードまたはインターフェースによる厳密な定義に置き換える。
-2. 各タスク関数の引数と戻り値の型定義が一貫しているか確認する。
-3. 未使用の型定義やインポートを整理する。
+**具体的なリファクター指示:**
+1. `src/tasks/kpi.ts` における Cloudflare API との通信ロジックと、データ加工ロジックを明確に分離してください。
+2. `src/tasks/stats.ts` と `src/tasks/summary.ts` で重複している集計ロジック（記事カウント等）がないか確認し、共通化してください。
+3. マジックナンバー（30日などの期間設定）を定数化してください。
+
+---
+
+### タスク 3: 配信・更新系タスクの整理
+
+対象: `src/tasks/delivery.ts`, `src/tasks/update-metadata.ts`, `src/tasks/extract.ts`, `src/tasks/export.ts`
+
+**具体的なリファクター指示:**
+1. ファイル操作（読み込み・書き込み）の共通パターン（一時ファイル作成 → リネーム等）が重複している場合、ユーティリティ化を検討してください。
+2. `update-metadata.ts` の正規表現による置換ロジックを、より堅牢で再利用可能な形に整理してください。
+3. 各関数の責務を明確にし、ビジネスロジックと I/O 処理の分離を推進してください。
+
+---
 
 ## 実行後の作業
 
-1. 全タスクの完了後、`npm run lint` および `npm test` を実行して正常性を確認してください。
-2. 正常性が確認されたら、`/auto-refactor` を再実行して `refactor-record.json` の記録を更新してください。
+全タスク完了後、`/auto-refactor` を再実行して記録（`refactor-record.json`）を更新してください。
