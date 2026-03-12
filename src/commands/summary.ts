@@ -32,17 +32,10 @@ export const summaryCommand = new Command('summary')
       await saveMarkdownReport(markdown, 'summary.md');
 
       // 30日以内更新数を算出してスナップショットを保存（git追跡対象）
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      const last30DaysUpdates = articles.filter(a => {
-        const d = a.lastModified ? new Date(a.lastModified) : new Date(a.publishedAt || 0);
-        return d >= thirtyDaysAgo;
-      }).length;
-
       await saveBlogSnapshot({
         generatedAt: new Date().toISOString(),
         totalArticles: summaryData.totalPosts,
-        last30DaysUpdates,
+        last30DaysUpdates: summaryData.recentPostsCount,
       });
 
       Logger.success('Summary generation completed successfully');
