@@ -4,12 +4,41 @@ import { BlogPost, BlogFrontmatter } from '../types';
 import { Logger } from '../utils/logger';
 import { relative } from 'path';
 
+/**
+ * Extracts a BlogPost object from a Markdown file.
+ *
+ * @param filePath Path to the Markdown file.
+ * @param basePath Base directory to calculate relative paths.
+ * @param publicCategories Categories that are considered public.
+ */
 export async function extractPost(
   filePath: string,
   basePath: string,
   publicCategories: string[] = []
 ): Promise<BlogPost> {
   const fileContent = await fs.readFile(filePath, 'utf-8');
+  let mtime: Date | undefined;
+
+  try {
+    const stats = await fs.stat(filePath);
+    mtime = stats.mtime;
+  } catch {
+    // Ignore stat errors
+  }
+
+  const relativePath = relative(basePath, filePath);
+  return parseBlogPost(fileContent, relativePath, publicCategories, mtime);
+}
+
+/**
+ * Parses Markdown content and frontmatter into a BlogPost object.
+ */
+export function parseBlogPost(
+  fileContent: string,
+  relativePath: string,
+  publicCategories: string[] = [],
+  mtime?: Date
+): BlogPost {
   const { data, content: body } = matter(fileContent);
   const frontmatter = data as BlogFrontmatter;
 
@@ -17,38 +46,31 @@ export async function extractPost(
   const category = frontmatter.category || '';
   const description = frontmatter.description || '';
   const tags = Array.isArray(frontmatter.tags) ? frontmatter.tags : [];
-
-  let lastModified: string | Date | undefined = frontmatter.updatedAt || frontmatter.publishedAt;
-  if (!lastModified) {
-    try {
-      const stats = await fs.stat(filePath);
-      lastModified = stats.mtime;
-    } catch {
-      // Ignore
-    }
-  }
-
   const slug = frontmatter.slug || '';
   const publishedAt = frontmatter.publishedAt || '';
   const author = frontmatter.author || '';
-
-  const characterCount = body.replace(/\s/g, '').length;
-
-  const isPublicCategory = Array.isArray(publicCategories) && publicCategories.includes(category);
-  const hasFreeContentHeading = !!frontmatter.freeContentHeading;
-  const isPaid = !isPublicCategory || hasFreeContentHeading;
   const jsonLd = frontmatter.jsonLd === true;
 
-  if (!title) {
-    Logger.warn(`Title is missing in ${filePath}`);
-  }
-  if (!category) {
-    Logger.warn(`Category is missing in ${filePath}`);
-  }
-
+  // Last modified logic
+  let lastModified: string | Date | undefined = frontmatter.updatedAt || frontmatter.publishedAt || mtime;
   const lastModifiedStr = lastModified instanceof Date
     ? lastModified.toISOString()
     : lastModified;
+
+  // Character count (excluding whitespace)
+  const characterCount = body.replace(/\s/g, '').length;
+
+  // Access control logic
+  const isPublicCategory = Array.isArray(publicCategories) && publicCategories.includes(category);
+  const hasFreeContentHeading = !!frontmatter.freeContentHeading;
+  const isPaid = !isPublicCategory || hasFreeContentHeading;
+
+  if (!title) {
+    Logger.warn(`Title is missing in ${relativePath}`);
+  }
+  if (!category) {
+    Logger.warn(`Category is missing in ${relativePath}`);
+  }
 
   const publishedAtStr = publishedAt instanceof Date
     ? publishedAt.toISOString()
@@ -58,7 +80,7 @@ export async function extractPost(
     title,
     description,
     category,
-    path: relative(basePath, filePath),
+    path: relativePath,
     ...(lastModifiedStr !== undefined ? { lastModified: lastModifiedStr } : {}),
     isPaid,
     characterCount,
