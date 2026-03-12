@@ -52,7 +52,7 @@ export function parseBlogPost(
   const jsonLd = frontmatter.jsonLd === true;
 
   // Last modified logic
-  let lastModified: string | Date | undefined = frontmatter.updatedAt || frontmatter.publishedAt || mtime;
+  const lastModified: string | Date | undefined = frontmatter.updatedAt || frontmatter.publishedAt || mtime;
   const lastModifiedStr = lastModified instanceof Date
     ? lastModified.toISOString()
     : lastModified;

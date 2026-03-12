@@ -49,6 +49,7 @@ const CONFIG: LintConfig = {
  * Main Lint function
  */
 export async function runDesignLint(): Promise<boolean> {
+  // eslint-disable-next-line no-console
   console.log('🎨 Running Design Lint...');
   let hasError = false;
 
@@ -87,17 +88,20 @@ export async function runDesignLint(): Promise<boolean> {
           }
 
           const line = content.substring(0, match.index).split('\n').length;
+          // eslint-disable-next-line no-console
           console.error(`❌ Hardcoded value found in ${filePath}:${line} -> "${matchedValue}" (Context: ...${context.replace(/\n/g, ' ')}...)`);
           hasError = true;
         }
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(`Error reading ${filePath}:`, error);
       hasError = true;
     }
   }
 
   if (!hasError) {
+    // eslint-disable-next-line no-console
     console.log('✅ Design Lint passed!');
   }
   return !hasError;

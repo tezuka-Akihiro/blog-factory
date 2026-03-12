@@ -82,6 +82,7 @@ describe('formatSummaryToMarkdown', () => {
     totalPosts: 10,
     paidPostsCount: 7,
     totalPaidCharacterCount: 50000,
+    recentPostsCount: 2,
     categoryCounts: { '記録・考察': 5, 'ClaudeMix ガイド': 5 },
     tagGroupCounts: { 'AI系': 8, 'プログラミング': 2 },
   };
@@ -106,6 +107,7 @@ describe('formatSummaryToMarkdown', () => {
       totalPosts: 0,
       paidPostsCount: 0,
       totalPaidCharacterCount: 0,
+      recentPostsCount: 0,
       categoryCounts: {},
       tagGroupCounts: {},
     };
