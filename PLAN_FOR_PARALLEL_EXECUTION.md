@@ -9,7 +9,7 @@
 
 ## 並列指示文
 
-### タスク 1: report.ts の分割と整理
+### タスク 1: report.ts の分割と整理 [x] 完了
 
 対象: `src/tasks/report.ts`
 
