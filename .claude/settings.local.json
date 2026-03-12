@@ -25,7 +25,8 @@
       "Bash(cd * && node *)",
       "Read(//c/Users/tizuh/.claude/**)",
       "Bash(find ~/.claude/plugins -name *)",
-      "Read(//c/Users/tizuh/**)"
+      "Read(//c/Users/tizuh/**)",
+      "Bash(git merge:*)"
     ]
   }
 }
