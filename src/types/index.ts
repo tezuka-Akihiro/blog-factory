@@ -32,6 +32,7 @@ export interface BlogFrontmatter {
 
 export interface SummaryData {
   totalPosts: number;
+  recentPostsCount: number;
   categoryCounts: Record<string, number>;
   tagGroupCounts: Record<string, number>;
   paidPostsCount: number;

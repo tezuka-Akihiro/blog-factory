@@ -137,6 +137,81 @@ async function fetchZoneMetrics(
   return { uu, pv, topSources: [], topPages, errorRate };
 }
 
+export interface KpiResponseData {
+  viewer: {
+    zones: Array<{
+      httpRequests1dGroups: Array<{
+        sum: { pageViews: number; requests: number; bytes: number };
+        uniq: { uniques: number };
+        dimensions: { date: string };
+      }>;
+      errorGroups: Array<{
+        count: number;
+      }>;
+      totalGroups: Array<{
+        count: number;
+      }>;
+    }>;
+  };
+}
+
+/**
+ * Cloudflare GraphQL API を使用して、指定した日付（UTC）の KPI データを取得する。
+ */
+export async function fetchKpiByDate(
+  zoneId: string,
+  apiToken: string,
+  dateStr: string,
+  since: string,
+  until: string,
+): Promise<KpiResponseData | null> {
+  const query = `
+    query KpiDaily($zoneTag: String!, $date: Date!, $since: String!, $until: String!) {
+      viewer {
+        zones(filter: { zoneTag: $zoneTag }) {
+          httpRequests1dGroups(
+            limit: 1
+            filter: { date: $date }
+            orderBy: [date_ASC]
+          ) {
+            sum { pageViews requests bytes }
+            uniq { uniques }
+            dimensions { date }
+          }
+          errorGroups: httpRequestsAdaptiveGroups(
+            filter: { datetimeMinute_geq: $since, datetimeMinute_leq: $until, edgeResponseStatus_geq: 400 }
+            limit: 1
+          ) {
+            count
+          }
+          totalGroups: httpRequestsAdaptiveGroups(
+            filter: { datetimeMinute_geq: $since, datetimeMinute_leq: $until }
+            limit: 1
+          ) {
+            count
+          }
+        }
+      }
+    }
+  `;
+
+  const json = await graphql<KpiResponseData>(apiToken, query, {
+    zoneTag: zoneId,
+    date: dateStr,
+    since,
+    until,
+  });
+
+  if (!json || json.errors?.length) {
+    if (json?.errors?.length) {
+      Logger.warn(`Cloudflare KPI query errors: ${JSON.stringify(json.errors)}`);
+    }
+    return null;
+  }
+
+  return json.data || null;
+}
+
 /**
  * 直近 `hours` 時間のトラフィックデータを取得する。
  * 無料プランの制限により最大24時間まで。

@@ -45,7 +45,7 @@ describe('calculateStats', () => {
       expect(result.total.count).toBe(4);
       expect(result.categories['カテゴリA']?.count).toBe(2);
       expect(result.categories['カテゴリB']?.count).toBe(1);
-      expect(result.categories['Uncategorized']?.count).toBe(1);
+      expect(result.categories['未設定']?.count).toBe(1);
     });
   });
 

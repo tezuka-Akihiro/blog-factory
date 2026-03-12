@@ -1,4 +1,6 @@
 import { BlogPost, SummaryData } from '../types';
+import { countArticlesByCategory, filterRecentArticles } from '../utils/aggregation';
+import { DEFAULT_RECENT_DAYS } from '../utils/constants';
 
 export function calculateSummary(
   articles: BlogPost[],
@@ -6,16 +8,14 @@ export function calculateSummary(
 ): SummaryData {
   const summary: SummaryData = {
     totalPosts: articles.length,
-    categoryCounts: {},
+    recentPostsCount: filterRecentArticles(articles, DEFAULT_RECENT_DAYS).length,
+    categoryCounts: countArticlesByCategory(articles),
     tagGroupCounts: {},
     paidPostsCount: 0,
     totalPaidCharacterCount: 0,
   };
 
   for (const article of articles) {
-    const category = article.category || '未設定';
-    summary.categoryCounts[category] = (summary.categoryCounts[category] || 0) + 1;
-
     if (article.isPaid) {
       summary.paidPostsCount++;
       summary.totalPaidCharacterCount += article.characterCount;
@@ -48,6 +48,7 @@ export function formatSummaryToMarkdown(summary: SummaryData): string {
   md += `| 項目 | 数値 |\n`;
   md += `| :--- | :--- |\n`;
   md += `| 記事総数 | ${summary.totalPosts} 件 |\n`;
+  md += `| 直近${DEFAULT_RECENT_DAYS}日の公開記事数 | ${summary.recentPostsCount} 件 |\n`;
   md += `| 有料記事数 | ${summary.paidPostsCount} 件 |\n`;
   md += `| 有料記事の総文字数 | ${summary.totalPaidCharacterCount.toLocaleString()} 文字 |\n\n`;
 

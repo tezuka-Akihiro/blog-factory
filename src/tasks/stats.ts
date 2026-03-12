@@ -1,4 +1,5 @@
 import { BlogPost, BlogStats } from '../types';
+import { countArticlesByCategory } from '../utils/aggregation';
 
 function stripMarkdown(text: string): number {
   const stripped = text
@@ -10,8 +11,12 @@ function stripMarkdown(text: string): number {
 }
 
 export function calculateStats(articles: BlogPost[]): BlogStats {
+  const categoryCounts = countArticlesByCategory(articles);
   const stats: BlogStats = {
-    categories: {},
+    categories: Object.keys(categoryCounts).reduce((acc, cat) => {
+      acc[cat] = { count: categoryCounts[cat] || 0, premiumChars: 0 };
+      return acc;
+    }, {} as BlogStats['categories']),
     total: {
       count: 0,
       paidCount: 0,
@@ -21,7 +26,7 @@ export function calculateStats(articles: BlogPost[]): BlogStats {
   };
 
   for (const article of articles) {
-    const category = article.category || 'Uncategorized';
+    const category = article.category || '未設定';
 
     const isPaidForStats = article.paywall === true || category.includes('ClaudeMix');
 
@@ -41,12 +46,7 @@ export function calculateStats(articles: BlogPost[]): BlogStats {
       premiumChars = stripMarkdown(paidContent);
     }
 
-    if (!stats.categories[category]) {
-      stats.categories[category] = { count: 0, premiumChars: 0 };
-    }
-
-    stats.categories[category].count++;
-    stats.categories[category].premiumChars += premiumChars;
+    stats.categories[category]!.premiumChars += premiumChars;
 
     stats.total.count++;
     stats.total.premiumChars += premiumChars;
