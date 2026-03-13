@@ -227,7 +227,7 @@ export function renderPage2(stats: ReportData['stats'], strategy: Strategy, date
 
             <div class="stage-box">
                 <div class="stage-title">② 流入（週次推移）</div>
-                <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--spacing-gap-tiny);">
+                <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-gap-tiny);">
                     <div class="stage-metric">
                         <div class="metric-label">UU</div>
                         <div class="metric-value" style="font-size: var(--font-size-title-inner);">${stats.traffic.uu}</div>
@@ -237,11 +237,6 @@ export function renderPage2(stats: ReportData['stats'], strategy: Strategy, date
                         <div class="metric-label">PV</div>
                         <div class="metric-value" style="font-size: var(--font-size-title-inner);">${stats.traffic.pv}</div>
                         <div style="font-size: var(--font-size-mini); color: var(--color-text-subtle);">ページ表示</div>
-                    </div>
-                    <div class="stage-metric">
-                        <div class="metric-label">指名検索数</div>
-                        <div class="metric-value" style="font-size: var(--font-size-title-inner);">${stats.traffic.namedSearchCount}</div>
-                        <div style="font-size: var(--font-size-mini); color: var(--color-text-subtle);">Search Console</div>
                     </div>
                 </div>
                 ${stats.traffic.weeklyTraffic.length > 0 ? `

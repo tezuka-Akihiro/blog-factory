@@ -2,7 +2,6 @@ import { Command } from 'commander';
 import { Logger } from '../utils/logger';
 import { loadStrategy, generateHtmlReport, saveExportFile, loadBlogSnapshot } from '../tasks/report';
 import { fetchD1MonitoringReports, fetchBusinessMetrics } from '../utils/d1-client';
-import { fetchSearchConsoleData } from '../utils/search-console-client';
 import { fetchGA4Data } from '../utils/ga4-client';
 import { ReportData } from '../types';
 
@@ -20,11 +19,8 @@ export const reportCommand = new Command('report')
       const monitoringLogs = await fetchD1MonitoringReports(7);
       const businessMetrics = await fetchBusinessMetrics();
 
-      // 3. Fetch Google API data (Search Console / GA4)
-      const [scData, ga4Data] = await Promise.all([
-        fetchSearchConsoleData(28),
-        fetchGA4Data(7),
-      ]);
+      // 3. Fetch GA4 data
+      const ga4Data = await fetchGA4Data(7);
 
       const criticalCount = monitoringLogs.filter(log => log.severity === 'CRITICAL').length;
       const warningCount = monitoringLogs.filter(log => log.severity === 'WARNING').length;
@@ -62,7 +58,6 @@ export const reportCommand = new Command('report')
             pv: ga4Data.screenPageViews,
             uu: ga4Data.activeUsers,
             avgStayTime: ga4Data.avgEngagementTime,
-            namedSearchCount: scData.namedSearchCount,
             topPages: ga4Data.topPages,
             weeklyTraffic: ga4Data.weeklyTraffic,
           },
