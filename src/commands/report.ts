@@ -2,7 +2,6 @@ import { Command } from 'commander';
 import { Logger } from '../utils/logger';
 import { loadStrategy, generateHtmlReport, saveExportFile, loadBlogSnapshot } from '../tasks/report';
 import { fetchD1MonitoringReports, fetchBusinessMetrics } from '../utils/d1-client';
-import { loadKpiHistory, summarizeKpiHistory } from '../tasks/kpi';
 import { fetchSearchConsoleData } from '../utils/search-console-client';
 import { fetchGA4Data } from '../utils/ga4-client';
 import { ReportData } from '../types';
@@ -17,22 +16,18 @@ export const reportCommand = new Command('report')
       const snapshot = await loadBlogSnapshot();
       const strategy = await loadStrategy();
 
-      // 2. Fetch D1 data & accumulated KPI history
+      // 2. Fetch D1 data
       const monitoringLogs = await fetchD1MonitoringReports(7);
       const businessMetrics = await fetchBusinessMetrics();
-      const kpiHistory = await loadKpiHistory();
-      const kpiSummary = summarizeKpiHistory(kpiHistory, 30);
 
       // 3. Fetch Google API data (Search Console / GA4)
       const [scData, ga4Data] = await Promise.all([
         fetchSearchConsoleData(28),
-        fetchGA4Data(28),
+        fetchGA4Data(7),
       ]);
 
       const criticalCount = monitoringLogs.filter(log => log.severity === 'CRITICAL').length;
       const warningCount = monitoringLogs.filter(log => log.severity === 'WARNING').length;
-
-      const errorRate = kpiSummary.errorRate;
 
       // Exclude test data (2 users)
       let remainingToSubtract = 2;
@@ -57,7 +52,6 @@ export const reportCommand = new Command('report')
           monitoring: {
             criticalCount,
             warningCount,
-            errorRate,
           },
           business: {
             paidMembers: adjustedPaidMembers,
@@ -65,11 +59,11 @@ export const reportCommand = new Command('report')
             activeSubscriptions: adjustedActiveSubscriptions,
           },
           traffic: {
-            pv: kpiSummary.pv,
-            uu: kpiSummary.uu,
-            avgStayTime: '-',
-            topSources: [],
-            topPages: [],
+            pv: ga4Data.screenPageViews,
+            uu: ga4Data.activeUsers,
+            avgStayTime: ga4Data.avgEngagementTime,
+            topPages: ga4Data.topPages,
+            weeklyTraffic: ga4Data.weeklyTraffic,
           },
           brand: {
             namedSearchCount: scData.namedSearchCount,

@@ -226,7 +226,7 @@ export function renderPage2(stats: ReportData['stats'], strategy: Strategy, date
             <div class="funnel-arrow">▶</div>
 
             <div class="stage-box">
-                <div class="stage-title">② 流入（直近24h）</div>
+                <div class="stage-title">② 流入（週次推移）</div>
                 <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-gap-tiny);">
                     <div class="stage-metric">
                         <div class="metric-label">UU</div>
@@ -239,10 +239,28 @@ export function renderPage2(stats: ReportData['stats'], strategy: Strategy, date
                         <div style="font-size: var(--font-size-mini); color: var(--color-text-subtle);">ページ表示</div>
                     </div>
                 </div>
-                <div class="stage-metric" style="grid-column: span 2;">
-                    <div class="metric-label">エラー率</div>
-                    <div class="metric-value" style="font-size: var(--font-size-medium);">${stats.monitoring.errorRate}</div>
-                </div>
+                ${stats.traffic.weeklyTraffic.length > 0 ? `
+                <div style="margin-top: 10px; border-top: var(--border-width-thin) solid var(--color-border-default); padding-top: 8px;">
+                    <div style="font-size: var(--font-size-mini); color: var(--color-text-muted); margin-bottom: 5px;">前3週推移</div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: var(--font-size-mini); line-height: 1.8;">
+                        <thead>
+                            <tr>
+                                <td style="width: 20px;"></td>
+                                ${stats.traffic.weeklyTraffic.map(w => `<td style="text-align: right; color: var(--color-text-muted); font-size: 10px;">${w.label}</td>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="color: var(--color-text-muted);">UU</td>
+                                ${stats.traffic.weeklyTraffic.map(w => `<td style="text-align: right;">${w.uu}</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td style="color: var(--color-text-muted);">PV</td>
+                                ${stats.traffic.weeklyTraffic.map(w => `<td style="text-align: right;">${w.pv}</td>`).join('')}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>` : ''}
             </div>
             <div class="funnel-arrow">▶</div>
 
@@ -268,9 +286,9 @@ export function renderPage2(stats: ReportData['stats'], strategy: Strategy, date
             <div class="stage-box" style="justify-content: center; align-items: center; text-align: center;">
                 <div class="stage-title">④ 無料会員</div>
                 <div style="margin-top: 12px;">
-                    <div style="font-size: var(--font-size-tiny); color: var(--color-text-muted); margin-bottom: 4px;">無料会員数</div>
+                    <div style="font-size: var(--font-size-tiny); color: var(--color-text-muted); margin-bottom: 4px;">無料会員数 / 目標</div>
                     <div style="font-weight: bold; color: var(--color-primary); font-size: var(--font-size-giga);">${stats.business.freeMembers}</div>
-                    <div style="font-size: var(--font-size-mini); color: var(--color-text-subtle);">members</div>
+                    <div style="font-size: var(--font-size-xs); color: var(--color-border-strong);">/ 10,000</div>
                 </div>
             </div>
             <div class="funnel-arrow">▶</div>
@@ -288,7 +306,7 @@ export function renderPage2(stats: ReportData['stats'], strategy: Strategy, date
         <!-- Bottom Row -->
         <div style="display: grid; grid-template-columns: 1fr 2fr; gap: var(--spacing-box-padding); flex: 1; min-height: 0; margin-bottom: var(--spacing-page-bottom-margin);">
             <div class="section-box">
-                <div class="section-title">人気記事 TOP5（直近24時間）</div>
+                <div class="section-title">人気記事 TOP5（直近7日）</div>
                 <div style="margin-top: var(--spacing-box-padding); font-size: var(--font-size-tiny-plus); overflow: hidden;">
                     ${stats.traffic.topPages.length > 0
                       ? stats.traffic.topPages.map((p, i) => `
