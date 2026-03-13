@@ -4,6 +4,7 @@ export interface GA4Data {
   activeUsers: number;
   screenPageViews: number;
   avgEngagementTime: string;
+  avgArticleEngagementTime: string;
   returnRate: string;
   topPages: Array<{ path: string; requests: number }>;
   weeklyTraffic: Array<{ label: string; uu: number; pv: number }>;
@@ -44,6 +45,7 @@ const FALLBACK: GA4Data = {
   activeUsers: 0,
   screenPageViews: 0,
   avgEngagementTime: '-',
+  avgArticleEngagementTime: '-',
   returnRate: '-',
   topPages: [],
   weeklyTraffic: [],
@@ -102,13 +104,28 @@ export async function fetchGA4Data(days: number = 28): Promise<GA4Data> {
       },
     };
 
+    // 記事ページフィルター（/blog/ 配下 = 個別記事）
+    const articleFilter = {
+      andGroup: {
+        expressions: [
+          excludeInternal,
+          {
+            filter: {
+              fieldName: 'pagePath',
+              stringFilter: { matchType: 'BEGINS_WITH', value: '/blog/' },
+            },
+          },
+        ],
+      },
+    };
+
     const weekRanges = [
       { label: '1週前', startDate: '14daysAgo', endDate: '8daysAgo' },
       { label: '2週前', startDate: '21daysAgo', endDate: '15daysAgo' },
       { label: '3週前', startDate: '28daysAgo', endDate: '22daysAgo' },
     ];
 
-    const [usersRes, pagesRes, ...weeklyResponses] = await Promise.all([
+    const [usersRes, pagesRes, articleRes, ...weeklyResponses] = await Promise.all([
       // 流入: /blog のUU・PV・エンゲージメント・新規/リピーター
       fetch(url, {
         method: 'POST',
@@ -149,6 +166,19 @@ export async function fetchGA4Data(days: number = 28): Promise<GA4Data> {
           limit: 5,
         }),
       }),
+      // 記事閲覧時間（/blog/ 配下の平均エンゲージメント時間）
+      fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          dateRanges,
+          metrics: [
+            { name: 'activeUsers' },
+            { name: 'userEngagementDuration' },
+          ],
+          dimensionFilter: articleFilter,
+        }),
+      }),
       // 週次推移（4週分を並列取得、/blog のみ）
       ...weekRanges.map(range =>
         fetch(url, {
@@ -165,13 +195,15 @@ export async function fetchGA4Data(days: number = 28): Promise<GA4Data> {
 
     if (!usersRes.ok) throw new Error(`GA4 API エラー (users): ${usersRes.status}`);
     if (!pagesRes.ok) throw new Error(`GA4 API エラー (pages): ${pagesRes.status}`);
+    if (!articleRes.ok) throw new Error(`GA4 API エラー (article): ${articleRes.status}`);
     for (const [i, res] of weeklyResponses.entries()) {
       if (!res.ok) throw new Error(`GA4 API エラー (weekly[${i}]): ${res.status}`);
     }
 
-    const [usersData, pagesData, ...weeklyDataList] = await Promise.all([
+    const [usersData, pagesData, articleData, ...weeklyDataList] = await Promise.all([
       usersRes.json() as Promise<RunReportResponse>,
       pagesRes.json() as Promise<RunReportResponse>,
+      articleRes.json() as Promise<RunReportResponse>,
       ...weeklyResponses.map(r => r.json() as Promise<RunReportResponse>),
     ]);
 
@@ -201,6 +233,16 @@ export async function fetchGA4Data(days: number = 28): Promise<GA4Data> {
     const returnRate =
       totalUsers > 0 ? `${((returningUsers / totalUsers) * 100).toFixed(1)}%` : '-';
 
+    // 記事閲覧時間（/blog/ 配下の平均エンゲージメント時間）
+    let articleUsers = 0;
+    let articleEngagementDuration = 0;
+    for (const row of articleData.rows ?? []) {
+      articleUsers += parseFloat(row.metricValues[0]?.value ?? '0');
+      articleEngagementDuration += parseFloat(row.metricValues[1]?.value ?? '0');
+    }
+    const avgArticleEngagementTime =
+      articleUsers > 0 ? formatSeconds(articleEngagementDuration / articleUsers) : '-';
+
     // 上位ページ
     const topPages = (pagesData.rows ?? []).map(row => ({
       path: row.dimensionValues[0]?.value ?? '(unknown)',
@@ -223,6 +265,7 @@ export async function fetchGA4Data(days: number = 28): Promise<GA4Data> {
       activeUsers: Math.round(totalUsers),
       screenPageViews: Math.round(totalPageViews),
       avgEngagementTime,
+      avgArticleEngagementTime,
       returnRate,
       topPages,
       weeklyTraffic,

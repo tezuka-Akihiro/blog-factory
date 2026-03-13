@@ -113,12 +113,13 @@ export interface ReportData {
       pv: number | string;
       uu: number | string;
       avgStayTime: number | string;
+      namedSearchCount: number;
       topPages: Array<{ path: string; requests: number }>;
       weeklyTraffic: Array<{ label: string; uu: number; pv: number }>;
     };
     brand: {
-      namedSearchCount: number;
       avgEngagementTime: string;
+      avgArticleEngagementTime: string;
       returnRate: string;
       avgScrollDepth: string;
     };

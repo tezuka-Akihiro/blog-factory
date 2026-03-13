@@ -257,15 +257,15 @@ export function exampleFunction() {
 
 詳細な選定記録 → [L3リンク（後で追加）]
 
-#### 自前認証トリオ
+#### Cloudflare ネイティブ層
 
-Remix-authがEdge Runtime（Node.js依存）に非対応だったため、自前実装の道を選んだ組み合わせです。
+CloudflareネイティブなストレージサービスとEdge環境から低レイテンシで利用できる外部サービスの組み合わせです。
 
 | 技術 | 選定種別 | 一言選定理由（延命医の診断） |
 |:---|:---|:---|
-| Cloudflare D1 | 自前認証起点 | {選定理由} |
-| Cloudflare KV | 自前認証起点 | {選定理由} |
-| Resend | 自前認証起点 | {選定理由} |
+| Cloudflare D1 | 独立選択 | {選定理由} |
+| Cloudflare KV | 独立選択 | {選定理由} |
+| Resend | 独立選択 | {選定理由} |
 
 詳細な選定記録 → [L3リンク（後で追加）]
 
