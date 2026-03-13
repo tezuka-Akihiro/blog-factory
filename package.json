@@ -15,8 +15,9 @@
     "update-metadata": "ts-node src/commands/index.ts update-metadata",
     "report": "ts-node src/commands/index.ts report",
     "kpi-collect": "ts-node src/commands/index.ts kpi-collect",
-    "lint": "tsc --noEmit && eslint src",
-    "lint:fix": "eslint src --fix"
+    "lint": "tsc --noEmit && eslint src && npm run lint:design",
+    "lint:fix": "eslint src --fix",
+    "lint:design": "ts-node --transpile-only src/utils/design-lint.ts"
   },
   "repository": {
     "type": "git",

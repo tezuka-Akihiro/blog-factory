@@ -103,7 +103,6 @@ export interface ReportData {
     monitoring: {
       criticalCount: number;
       warningCount: number;
-      errorRate: string;
     };
     business: {
       paidMembers: number;
@@ -114,12 +113,12 @@ export interface ReportData {
       pv: number | string;
       uu: number | string;
       avgStayTime: number | string;
-      topSources: Array<{ host: string; visits: number }>;
       topPages: Array<{ path: string; requests: number }>;
+      weeklyTraffic: Array<{ label: string; uu: number; pv: number }>;
     };
     brand: {
-      namedSearchCount: number;
       avgEngagementTime: string;
+      avgArticleEngagementTime: string;
       returnRate: string;
       avgScrollDepth: string;
     };

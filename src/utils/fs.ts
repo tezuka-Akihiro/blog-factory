@@ -12,3 +12,10 @@ export async function writeAtomic(filePath: string, content: string): Promise<vo
   await fs.writeFile(tempPath, content, 'utf-8');
   await fs.rename(tempPath, filePath);
 }
+
+/**
+ * Normalizes a file path to use forward slashes (/) regardless of the OS.
+ */
+export function normalizePath(path: string): string {
+  return path.replace(/\\/g, '/');
+}
