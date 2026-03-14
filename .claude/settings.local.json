@@ -1,32 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run *)",
-      "Bash(npm install *)",
-      "Bash(npx ts-node*)",
-      "Bash(node *)",
-      "Bash(git status)",
-      "Bash(git log*)",
-      "Bash(git diff*)",
-      "Bash(git add *)",
-      "Bash(git commit*)",
-      "Bash(git branch*)",
-      "Bash(git checkout *)",
-      "Bash(git switch *)",
-      "Bash(git fetch*)",
-      "Bash(git pull*)",
-      "Bash(ls *)",
-      "Bash(ls)",
-      "Bash(npx eslint*)",
-      "Bash(cd * && npm run *)",
-      "Bash(cd * && npm install *)",
-      "Bash(cd * && npx ts-node*)",
-      "Bash(cd * && npx eslint*)",
-      "Bash(cd * && node *)",
-      "Read(//c/Users/tizuh/.claude/**)",
-      "Bash(find ~/.claude/plugins -name *)",
-      "Read(//c/Users/tizuh/**)",
-      "Bash(git merge:*)"
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)"
     ]
   }
 }

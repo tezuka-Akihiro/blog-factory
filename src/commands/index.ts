@@ -8,7 +8,6 @@ import { deliveryCommand } from './delivery';
 import { exportCommand } from './export';
 import { updateMetadataCommand } from './update-metadata';
 import { reportCommand } from './report';
-import { kpiCollectCommand } from './kpi-collect';
 
 dotenv.config();
 
@@ -33,7 +32,6 @@ program
   exportCommand,
   updateMetadataCommand,
   reportCommand,
-  kpiCollectCommand,
 ].forEach((cmd) => program.addCommand(cmd));
 
 program.parse(process.argv);

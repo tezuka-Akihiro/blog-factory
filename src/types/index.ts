@@ -84,15 +84,6 @@ export interface BlogSnapshot {
   last30DaysUpdates: number;
 }
 
-export interface KpiRecord {
-  date: string; // YYYY-MM-DD (UTC)
-  pv: number;
-  uu: number;
-  requests: number;
-  bytes: number;
-  errorRate?: string; // "0.0%" 形式、取得失敗時は undefined
-  collectedAt: string; // ISO timestamp
-}
 
 export interface ReportData {
   strategy: import('./strategy').Strategy;
